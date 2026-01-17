@@ -30,7 +30,7 @@ ion-content {
     p {
       /* Responsividade para o texto */
       font-size: 2rem;
-      margin-bottom: clamp(80px, 20vh, 150px); /* Margem responsiva */
+      margin-bottom: 8rem;
       text-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
       line-height: 1.2;
       padding: 0 15px; /* Padding lateral para telas pequenas */
@@ -55,7 +55,3 @@ ion-content {
 }
 
 
-ion-content::part(background) {
-  background: #80ACFF;
-  background: linear-gradient(180deg, rgba(128, 172, 255, 1) 0%, rgba(202, 99, 204, 1) 100%);
-}
