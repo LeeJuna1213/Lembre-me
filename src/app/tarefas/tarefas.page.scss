@@ -1,15 +1,21 @@
 ion-content{
     .header{
-      margin-top: -40px;
+      margin-top: -30px;
     }
 
-    .fechar{
+    .fechar, .desfazer{
       position: absolute;
       background-color: transparent;
-      font-size: 50px;
-      top: 12px;           
-      left: 12px;  
+      top: 20px;  
+      font-size: 35px;          
     }
+    .fechar{
+      left: 12px;
+    }
+    .desfazer{
+      right: 12px; 
+    }
+    
     .emoji1{
        width: 100vw;
        display: flex;
@@ -27,7 +33,7 @@ ion-content{
     }
 
    .listaTarefas{
-      margin-top: -70px;
+      margin-top: -60px;
         ion-item{
           --background: transparent;
         }

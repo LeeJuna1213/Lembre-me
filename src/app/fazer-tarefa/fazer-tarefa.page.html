@@ -1,13 +1,26 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>fazer-tarefa</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">fazer-tarefa</ion-title>
-    </ion-toolbar>
-  </ion-header>
+   <button class="fechar" (click)="voltarTarefas()">
+    ↩
+  </button>
+   <div class="tarefa-info">
+    <div class="emoji">{{ tarefa?.emoji }}</div>
+    <h2 class="titulo">{{ tarefa?.titulo }}</h2>
+  </div>
+
+  <ion-card class="card-foto">
+    <div class="preview-container" *ngIf="tarefa?.foto">
+  <img
+    [src]="tarefa.foto"
+    class="preview-foto"
+  />
+  </div>
+    <button class="bnt-foto" (click)="tirarFoto()">
+    📸 Tirar foto para comprovar
+  </button>
+  </ion-card>
+     
+  <button class="bnt-concluir" 
+  (click)="confirmarTarefa()">
+    ✔️ Concluir tarefa
+  </button> 
 </ion-content>
