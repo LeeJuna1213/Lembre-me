@@ -82,6 +82,17 @@ export class FazerTarefaPage implements OnInit {
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
+  excluirTarefa() {
+    const tarefas: Tarefa[] =
+      JSON.parse(localStorage.getItem('tarefas') || '[]');
+
+    const atualizadas = tarefas.filter(t => t.id !== this.tarefa.id);
+
+    localStorage.setItem('tarefas', JSON.stringify(atualizadas));
+
+    this.router.navigate(['/tarefas']);
+  }
+
   voltarTarefas() {
     this.router.navigate(['/tarefas']);
   }
