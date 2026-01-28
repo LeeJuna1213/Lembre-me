@@ -45,4 +45,6 @@ ion-content::part(background) {
   background: linear-gradient(180deg, rgb(142, 178, 241) 0%, rgba(202, 99, 204, 1) 100%);
 }
 
-
+:root {
+  color-scheme: light;
+}
