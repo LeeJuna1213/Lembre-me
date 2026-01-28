@@ -1,13 +1,30 @@
-Este é um aplicativo simples e intuitivo criado especialmente para ajudar pessoas ansiosas a lembrarem das tarefas importantes do dia a dia de forma leve e sem pressão.
+🌸 ☁️ Sobre o aplicativo
+━━━━━━━━━━━━━━━━━━━━━━━
 
-No app, o usuário conta com tarefas padrão e também pode adicionar suas próprias tarefas, organizando melhor a rotina e evitando esquecimentos. Cada tarefa pode ser marcada como concluída somente após o usuário entrar na tela da tarefa e confirmar sua realização.
+✨ Este é um aplicativo simples, intuitivo e acolhedor, criado especialmente para ajudar pessoas ansiosas a lembrarem das tarefas importantes do dia a dia de forma leve, organizada e sem pressão 🤍
 
-Ao concluir uma tarefa, o aplicativo registra automaticamente a data e o horário em que ela foi finalizada, permitindo acompanhar o que já foi feito. Além disso, é possível conferir a tarefa concluída, visualizando a foto tirada no momento da execução, trazendo mais segurança e tranquilidade para quem precisa confirmar que realmente realizou aquela ação.
+━━━━━━━━━━━━━━━━━━━━━━━
 
-Com um visual acolhedor e uma navegação simples, o app foi pensado para tornar o dia a dia mais organizado, ajudando a reduzir a ansiedade e trazendo mais controle sobre pequenas tarefas importantes.
+📝 Funcionalidades principais
+• O usuário conta com tarefas padrão
+• Pode adicionar suas próprias tarefas
+• Organização da rotina para evitar esquecimentos ⏰
 
+✔️ Cada tarefa só pode ser marcada como concluída após o usuário entrar na tela da tarefa e confirmar sua realização, garantindo mais atenção e consciência no processo
 
+━━━━━━━━━━━━━━━━━━━━━━━
 
+📅 Registro automático
+• Ao concluir uma tarefa, o app registra data e horário automaticamente
+• Permite acompanhar tudo o que já foi realizado 📊
 
+📸 Além disso, é possível visualizar a foto tirada no momento da execução, trazendo mais segurança, tranquilidade e confirmação real de que a tarefa foi feita
 
-<img width="212" height="457" alt="image" src="https://github.com/user-attachments/assets/78079bd3-14f2-44fe-b7fb-dffe02359648" />
+━━━━━━━━━━━━━━━━━━━━━━━
+
+💗 Experiência pensada com carinho
+• Visual acolhedor
+• Navegação simples e intuitiva
+• Foco em reduzir a ansiedade e aumentar o controle do dia a dia
+
+🌷 Um app feito para transformar pequenas tarefas em passos leves, trazendo mais organização, calma e bem-estar ✨
