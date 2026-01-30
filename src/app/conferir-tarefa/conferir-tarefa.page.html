@@ -1,0 +1,34 @@
+<ion-content [fullscreen]="true">
+  <button class="fechar" (click)="voltarTarefas()">
+      ↩️
+  </button>
+  <div class="header">
+      <div class="emoji2">
+        <img src="assets/emoji2.png" alt="emoji de olhos">
+        <p>Conferir</p>
+      </div>
+  </div>
+  <ion-card class="card-foto" *ngIf="tarefa.foto">
+    <p class="datahora" *ngIf="tarefa.feito">
+      Feito em: {{ tarefa.datetime }}
+    </p>
+    <div class="preview-container">
+      <img
+        [src]="tarefa.foto"
+        alt="Foto de comprovação"
+        class="preview-foto"
+      />
+    </div>
+  </ion-card>
+  <ion-card class="card-foto" *ngIf="!tarefa.foto">
+    <p class="datahora" *ngIf="tarefa.feito">
+      Feito em: {{ tarefa.datetime }}
+    </p>
+    <p class="semfoto">Nenhuma foto foi enviada! 😟</p>
+  </ion-card>
+  <ion-card class="confirmar">
+    <button class="ok" (click)="voltarTarefas()">
+      OK!👌
+    </button>
+ </ion-card>
+</ion-content>

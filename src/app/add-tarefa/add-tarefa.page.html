@@ -1,0 +1,35 @@
+<ion-content [fullscreen]="true">
+  <button class="fechar" (click)="voltarTarefas()">
+      ↩️
+  </button>
+  <div class="header">
+    <p class="emoji">📤</p>
+    <p class="titulo">Adicionar nova tarefa</p>
+  </div>
+    <ion-card class="addcard">
+      <p class="titulo-input">Inserir Tarefa:</p>
+      <input
+        class="input-normal"
+        type="text"
+        placeholder="Ex: Lavar Roupa"
+        maxlength="30"
+        [(ngModel)]="titulo"
+      />
+
+      <p class="titulo-input">Emoji:</p>
+      <input
+        class="input-normal"
+        type="text"
+        placeholder="🧺"
+        maxlength="2"
+        [(ngModel)]="emoji"
+      />
+    </ion-card>
+
+
+  <ion-card class="add">
+    <button class="addTarefa" (click)="adicionarTarefa()">
+      OK!👌
+    </button>
+  </ion-card>
+</ion-content>

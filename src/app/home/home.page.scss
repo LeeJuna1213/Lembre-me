@@ -1,0 +1,57 @@
+* {
+  box-sizing: border-box; /* Adiciona isso no início */
+}
+
+ion-content {
+  --background: #ffff;
+
+  .foto-fundo {
+    position: fixed;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  main {
+    width: 100%;
+    height: 100%;
+    * {
+      z-index: 2;
+      position: relative;
+    }
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px; /* Adiciona padding para telas menores */
+    
+    p {
+      /* Responsividade para o texto */
+      font-size: 2rem;
+      margin-bottom: 8rem;
+      text-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      line-height: 1.2;
+      padding: 0 15px; /* Padding lateral para telas pequenas */
+    }
+    
+    ion-button {
+      /* Responsividade para o botão */
+      --padding-top: 20px;
+      --padding-bottom: 20px;
+      font-size: 2rem;
+      --padding-start: 3rem; 
+      --padding-end: 3rem;
+      --border-radius: 10px;
+      text-transform: none;
+      color: white;
+      *{
+      text-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
+      min-width: min(250px, 80vw); /* Largura mínima responsiva */
+      }
+    }
+  }
+}
+
+

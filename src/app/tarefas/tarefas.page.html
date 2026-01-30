@@ -1,0 +1,43 @@
+<ion-content [fullscreen]="true">
+    <button class="fechar" (click)="voltarHome()">
+      ↩️
+     </button>
+    <button class="desfazer" (click)="desfazerTodas()">
+      🔄
+    </button>
+  <div class="header">
+    <div class="emoji1">
+      <img src="assets/emoji1.png" alt="emoji pensativo">
+      <p>O que eu preciso fazer?</p>
+    </div>
+  </div>
+<div class="listaTarefas">
+  <ion-card *ngFor="let tarefa of tarefas" class="tarefa-card">
+
+    <ion-item lines="none">
+      <ion-avatar slot="start" class="emoji">
+        <span>{{ tarefa.emoji }}</span>
+      </ion-avatar>
+      <ion-label>
+        <h2 class="titulo">{{ tarefa.titulo }}</h2>
+        <p class="datahora" *ngIf="tarefa.feito">
+          Feito em: {{ tarefa.datetime }}
+        </p>
+      </ion-label>
+    </ion-item>
+    <div class="botao-container">
+        <button
+          class="acao-btn"
+          (click)="acaoTarefa(tarefa)"
+        >
+          {{ tarefa.feito ? 'Conferir' : 'Fazer' }}
+        </button>
+    </div>
+  </ion-card>
+  <ion-card class="add">
+    <button class="addTarefa" (click)="irParaAddTarefa()">
+      Nova tarefa
+    </button>
+  </ion-card>
+  </div>
+</ion-content>
