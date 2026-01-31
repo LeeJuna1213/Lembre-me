@@ -34,13 +34,34 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
-@import url('https://fonts.googleapis.com/css2?family=Kameron:wght@400..700&family=Zalando+Sans+Expanded:ital,wght@0,200..900;1,200..900&display=swap');
-*{
-    font-family: Kameron;
+
+@import url('https://fonts.googleapis.com/css2?family=Kameron:wght@400;700&display=swap');
+
+
+
+:root {
+  --ion-font-family: 'Kameron', serif;
 }
 
-ion-content::part(background) {
-  background: #80ACFF;
-  background: linear-gradient(180deg, rgb(142, 178, 241) 0%, rgba(202, 99, 204, 1) 100%);
+html,
+body,
+ion-app,
+ion-content,
+ion-label,
+ion-text,
+p,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+ion-button {
+  font-family: var(--ion-font-family) !important;
+}
+
+/* garante scroll */
+ion-content {
+  --overflow: auto;
 }
