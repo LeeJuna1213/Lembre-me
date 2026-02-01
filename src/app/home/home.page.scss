@@ -14,11 +14,9 @@ ion-content {
   inset: 0;
   z-index: 0;
 
-  background: linear-gradient(
-    180deg,
-    rgba(142, 178, 241, 0.85) 0%,
-    rgba(202, 99, 204, 0.9) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(142, 178, 241, 0.85) 0%,
+      rgba(202, 99, 204, 0.9) 100%);
 }
 
 
@@ -63,6 +61,7 @@ ion-button {
   color: white;
 
   --border-radius: 16px;
-  --min-height: 80px;
   min-width: min(250px, 80vw);
+  --padding-top: 5px;
+  --padding-bottom: 5px;
 }
