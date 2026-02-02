@@ -1,5 +1,11 @@
 {
 	"appId": "com.jully.lembreme",
 	"appName": "lembre-me",
-	"webDir": "www"
+	"webDir": "www",
+	"plugins": {
+		"StatusBar": {
+			"overlaysWebView": false,
+			"style": "DARK"
+		}
+	}
 }
