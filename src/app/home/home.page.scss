@@ -42,16 +42,14 @@ main {
 
 }
 
-.logo{
-  margin-bottom: 20px;
-}
+
 
 main p {
   font-size: 2rem;
   color: white;
   line-height: 1.2;
   padding: 0 15px;
-  margin-bottom: 150px;
+  margin-bottom: 130px;
 
   text-shadow:
     rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
@@ -62,10 +60,10 @@ ion-button {
   font-size: 2.5rem;
   text-transform: none;
   color: white;
-  margin-bottom: 120px;
+  margin-bottom: 140px;
 
   --border-radius: 16px;
   min-width: min(250px, 80vw);
-  --padding-top: 15px;
-  --padding-bottom: 15px; 
+  --padding-top: 10px;
+  --padding-bottom: 10px; 
 }
