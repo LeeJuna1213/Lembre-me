@@ -43,7 +43,7 @@ main {
 }
 
 .logo{
-  margin-bottom: 30px;
+  margin-bottom: 50px;
 }
 
 main p {
@@ -51,7 +51,7 @@ main p {
   color: white;
   line-height: 1.2;
   padding: 0 15px;
-  margin-bottom: 100px;
+  margin-bottom: 150px;
 
   text-shadow:
     rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
@@ -62,7 +62,7 @@ ion-button {
   font-size: 2.5rem;
   text-transform: none;
   color: white;
-  margin-bottom: 50px;
+  margin-bottom: 100px;
 
   --border-radius: 16px;
   min-width: min(250px, 80vw);
