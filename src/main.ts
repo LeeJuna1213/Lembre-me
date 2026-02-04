@@ -8,6 +8,12 @@ import { importProvidersFrom } from '@angular/core';
 
 import { IonicModule } from '@ionic/angular';
 
+
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
+
+defineCustomElements(window);
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
