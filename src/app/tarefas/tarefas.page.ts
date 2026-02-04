@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
   imports: [ CommonModule, FormsModule, IonicModule]
 })
 
+
 export class TarefasPage implements OnInit {
 
   tarefas: Tarefa[] = [];
@@ -27,14 +28,28 @@ export class TarefasPage implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    // pode deixar vazio ou remover
+
   }
 
   carregarTarefas() {
     const tarefasSalvas = localStorage.getItem('tarefas');
 
     if (tarefasSalvas) {
-      this.tarefas = JSON.parse(tarefasSalvas);
+      const tarefasParseadas: Tarefa[] = JSON.parse(tarefasSalvas);
+
+
+      this.tarefas = tarefasParseadas.map((tarefa, index) => ({
+        id: tarefa.id ?? Date.now() + index,
+        titulo: tarefa.titulo,
+        emoji: tarefa.emoji,
+        feito: tarefa.feito ?? false,
+        datetime: tarefa.datetime,
+        foto: tarefa.foto,
+        fotoReloads: tarefa.fotoReloads
+      }));
+
+
+      this.salvarTarefas();
     } else {
       this.tarefas = [...this.tarefasPadrao];
       this.salvarTarefas();
@@ -45,13 +60,18 @@ export class TarefasPage implements OnInit {
     localStorage.setItem('tarefas', JSON.stringify(this.tarefas));
   }
 
-acaoTarefa(tarefa: Tarefa) {
-  if (!tarefa.feito) {
-    this.router.navigate(['/fazer-tarefa', tarefa.id]);
-  } else {
-    this.router.navigate(['/conferir-tarefa', tarefa.id]);
+  acaoTarefa(tarefa: Tarefa) {
+    if (!tarefa.id) {
+      console.error('Tarefa sem ID:', tarefa);
+      return;
+    }
+
+    if (!tarefa.feito) {
+      this.router.navigate(['/fazer-tarefa', tarefa.id]);
+    } else {
+      this.router.navigate(['/conferir-tarefa', tarefa.id]);
+    }
   }
-}
 
 
   ionViewWillEnter() {

@@ -41,5 +41,23 @@ export class ConferirTarefaPage implements OnInit {
    voltarTarefas() {
     this.router.navigate(['/tarefas']);
   }
+  
+    reiniciarTarefa() {
+    this.tarefa.feito = false;
+    this.tarefa.datetime = undefined;
+    this.tarefa.foto = undefined;
+    this.tarefa.fotoReloads = undefined;
+
+    const tarefas: Tarefa[] =
+      JSON.parse(localStorage.getItem('tarefas') || '[]');
+
+    const atualizadas = tarefas.map(t =>
+      t.id === this.tarefa.id ? { ...this.tarefa } : t
+    );
+
+    localStorage.setItem('tarefas', JSON.stringify(atualizadas));
+
+    this.router.navigate(['/fazer-tarefa', this.tarefa.id]);
+  }
 }
 

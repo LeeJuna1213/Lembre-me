@@ -36,7 +36,7 @@ export class FazerTarefaPage implements OnInit {
 
     this.tarefa = { ...encontrada };
 
-    // controle de reload da foto
+    // Controle de reload da foto (proteção contra bug)
     if (this.tarefa.foto) {
       this.tarefa.fotoReloads = (this.tarefa.fotoReloads ?? 0) + 1;
 
@@ -49,20 +49,59 @@ export class FazerTarefaPage implements OnInit {
     }
   }
 
+  // Tirar foto (funciona no browser e no celular)
   async tirarFoto() {
-    const imagem = await Camera.getPhoto({
-      quality: 70,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Camera
-    });
+    try {
+      const imagem = await Camera.getPhoto({
+        quality: 60,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera
+      });
 
-    this.tarefa.foto = imagem.dataUrl!;
-    this.tarefa.fotoReloads = 0;
+      if (!imagem?.dataUrl) return;
 
-    this.salvarAtualizacao();
+      const imagemReduzida = await this.redimensionarImagem(imagem.dataUrl);
+
+      this.tarefa.foto = imagemReduzida;
+      this.tarefa.fotoReloads = 0;
+
+      this.salvarAtualizacao();
+
+    } catch (erro: any) {
+      // Cancelamento da câmera não é erro real
+      if (erro?.message?.includes('User cancelled')) {
+        console.log('Usuário cancelou a câmera');
+      } else {
+        console.error('Erro ao tirar foto:', erro);
+      }
+    }
   }
 
+  // Redimensionar + comprimir imagem (essencial para localStorage)
+  private redimensionarImagem(base64: string): Promise<string> {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.src = base64;
+
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const maxWidth = 480;
+
+        const scale = Math.min(1, maxWidth / img.width);
+
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        resolve(canvas.toDataURL('image/jpeg', 0.4));
+      };
+    });
+  }
+
+  //  Concluir tarefa
   confirmarTarefa() {
     this.tarefa.feito = true;
     this.tarefa.datetime = new Date().toLocaleString();
@@ -71,7 +110,10 @@ export class FazerTarefaPage implements OnInit {
     this.router.navigate(['/tarefas']);
   }
 
+  //  Salvar alterações
   salvarAtualizacao() {
+    if (!this.tarefa?.id) return;
+
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
@@ -82,6 +124,7 @@ export class FazerTarefaPage implements OnInit {
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
+  //  Excluir tarefa
   excluirTarefa() {
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
@@ -93,7 +136,10 @@ export class FazerTarefaPage implements OnInit {
     this.router.navigate(['/tarefas']);
   }
 
+  //  Voltar
   voltarTarefas() {
     this.router.navigate(['/tarefas']);
   }
+
 }
+
