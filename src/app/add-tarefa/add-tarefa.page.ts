@@ -19,25 +19,32 @@ export class AddTarefaPage {
 
   constructor(private router: Router) {}
 
+  // ✅ Restaura titulo e emoji ao voltar para a tela
+  ionViewWillEnter() {
+    const state = history.state;
+
+    if (state?.titulo !== undefined) this.titulo = state.titulo;
+    if (state?.emoji !== undefined) this.emoji = state.emoji;
+  }
+
   adicionarTarefa() {
-    // validação básica
-    if (!this.titulo.trim() || !this.emoji.trim()) {
-      return;
-    }
+    if (!this.titulo.trim() || !this.emoji.trim()) return;
 
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
     const novaTarefa: Tarefa = {
-      id: Date.now(), // id único simples
+      id: Date.now() % 100000,
       titulo: this.titulo.trim(),
       emoji: this.emoji.trim(),
       feito: false
     };
 
     tarefas.push(novaTarefa);
-
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
+
+    this.titulo = '';
+    this.emoji = '';
 
     this.router.navigate(['/tarefas']);
   }

@@ -1,57 +1,51 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { Tarefa } from '../interfaces/tarefas.interfaces';
 import { Router } from '@angular/router';
-
+import { NotificacoesService } from '../services/notificacoes.services';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tarefas',
   templateUrl: './tarefas.page.html',
   styleUrls: ['./tarefas.page.scss'],
   standalone: true,
-  imports: [ CommonModule, FormsModule, IonicModule]
+  imports: [CommonModule, FormsModule, IonicModule]
 })
-
-
-export class TarefasPage implements OnInit {
+export class TarefasPage {
 
   tarefas: Tarefa[] = [];
 
   tarefasPadrao: Tarefa[] = [
     { id: 1, titulo: 'Apagar as luzes', emoji: '💡', feito: false },
     { id: 2, titulo: 'Trancar a porta', emoji: '🚪', feito: false },
-    { id: 3, titulo: 'Desligar o gás', emoji: '🎛️', feito: false }
+    { id: 3, titulo: 'Desligar o gás',  emoji: '🎛️', feito: false }
   ];
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private notificacoes: NotificacoesService,
+    private alertCtrl: AlertController,
+  ) {}
 
-  ngOnInit() {
-
+  ionViewWillEnter() {
+    this.carregarTarefas();
   }
 
   carregarTarefas() {
     const tarefasSalvas = localStorage.getItem('tarefas');
 
     if (tarefasSalvas) {
-      const tarefasParseadas: Tarefa[] = JSON.parse(tarefasSalvas);
-
-
-      this.tarefas = tarefasParseadas.map((tarefa, index) => ({
-        id: tarefa.id ?? Date.now() + index,
-        titulo: tarefa.titulo,
-        emoji: tarefa.emoji,
-        feito: tarefa.feito ?? false,
-        datetime: tarefa.datetime,
-        foto: tarefa.foto,
-        fotoReloads: tarefa.fotoReloads
-      }));
-
-
-      this.salvarTarefas();
+      // ✅ Parse direto — preserva todos os campos, inclusive lembrete
+      this.tarefas = JSON.parse(tarefasSalvas);
     } else {
+      // Primeira vez: inicializa padrão e garante que proximo_id não colide
       this.tarefas = [...this.tarefasPadrao];
+      if (!localStorage.getItem('proximo_id')) {
+        localStorage.setItem('proximo_id', '4'); // ✅ IDs 1,2,3 já usados pelas padrão
+      }
       this.salvarTarefas();
     }
   }
@@ -60,22 +54,21 @@ export class TarefasPage implements OnInit {
     localStorage.setItem('tarefas', JSON.stringify(this.tarefas));
   }
 
+  // ✅ trackBy evita re-renderização desnecessária que causava a duplicação visual
+  trackById(index: number, tarefa: Tarefa): number {
+    return tarefa.id;
+  }
+
   acaoTarefa(tarefa: Tarefa) {
     if (!tarefa.id) {
       console.error('Tarefa sem ID:', tarefa);
       return;
     }
-
     if (!tarefa.feito) {
       this.router.navigate(['/fazer-tarefa', tarefa.id]);
     } else {
       this.router.navigate(['/conferir-tarefa', tarefa.id]);
     }
-  }
-
-
-  ionViewWillEnter() {
-    this.carregarTarefas();
   }
 
   irParaAddTarefa() {
@@ -86,20 +79,64 @@ export class TarefasPage implements OnInit {
     this.router.navigate(['/home']);
   }
 
-  desfazerTodas() {
-  const tarefasAtualizadas = this.tarefas.map(tarefa => ({
-    ...tarefa,
-    feito: false,
-    datetime: undefined,
-    foto: undefined,
-    fotoReloads: undefined
-  }));
+  async desfazerTodas() {
+    const alert = await this.alertCtrl.create({
+      header: '🙀 Resetar tudo?',
+      message: 'Todas as tarefas e lembretes serão resetadas.',
+      buttons: [
+        {
+          text: 'Não ❌',
+          role: 'cancel'
+        },
+        {
+          text: 'Sim 🗑️',
+          role: 'destructive',
+          handler: async () => {
+            await this.notificacoes.cancelarTodas();
 
-  this.tarefas = tarefasAtualizadas;
+            this.tarefas = this.tarefas.map(tarefa => ({
+              ...tarefa,
+              feito: false,
+              lembrete: undefined,
+              datetime: undefined,
+              foto: undefined,
+              fotoReloads: undefined
+            }));
 
-  localStorage.setItem('tarefas', JSON.stringify(tarefasAtualizadas));
-}
+            this.salvarTarefas();
+          }
+        }
+      ]
+    });
 
+    await alert.present();
+  }
+    textoLembrete(tarefa: Tarefa): string {
+    const lembrete = tarefa.lembrete;
+    if (!lembrete) return '';
+
+    const hora = lembrete.hora;
+
+    if (lembrete.tipo === 'diario') {
+      return `Diário às ${hora}`;
+    }
+
+    if (lembrete.tipo === 'semanal') {
+      const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+      const dias = (lembrete.diasSemana || [])
+        .map(d => nomesDias[d])
+        .join(', ');
+
+      return `Semanal: ${dias} às ${hora}`;
+    }
+
+    if (lembrete.tipo === 'mensal') {
+      return `Mensal: dia ${lembrete.diaMes} às ${hora}`;
+    }
+
+    return '';
+  }
 }
 
 

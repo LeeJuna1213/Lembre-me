@@ -59,5 +59,12 @@ export class ConferirTarefaPage implements OnInit {
 
     this.router.navigate(['/fazer-tarefa', this.tarefa.id]);
   }
+  
+  irParaLembrete() {
+    this.router.navigate(
+      ['/add-lembrete', this.tarefa.id],
+      { queryParams: { origem: 'conferir' } }
+    );
+  }
 }
 

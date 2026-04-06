@@ -6,4 +6,15 @@ export interface Tarefa {
   feito: boolean;   
   foto?: string;
   fotoReloads?: number;
+
+  lembrete?: {
+    tipo: 'diario' | 'semanal' | 'mensal';
+    hora: string;
+
+    // 🔁 semanal
+    diasSemana?: number[];
+
+    // 📆 mensal (NOVO)
+    diaMes?: number;
+  };
 }

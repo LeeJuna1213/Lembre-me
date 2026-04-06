@@ -1,5 +1,5 @@
 <ion-content [fullscreen]="true">
-    <button class="fechar" (click)="voltarHome()">
+    <button class="voltar" (click)="voltarHome()">
       ↩️
      </button>
     <button class="desfazer" (click)="desfazerTodas()">
@@ -21,7 +21,10 @@
       <ion-label>
         <h2 class="titulo">{{ tarefa.titulo }}</h2>
         <p class="datahora" *ngIf="tarefa.feito">
-          Feito em: {{ tarefa.datetime }}
+          ✅Feito em: {{ tarefa.datetime }}
+        </p>
+        <p class="info-lembrete" *ngIf="tarefa.lembrete">
+          ⏰ {{ textoLembrete(tarefa) }}
         </p>
       </ion-label>
     </ion-item>
@@ -39,5 +42,5 @@
       Nova tarefa
     </button>
   </ion-card>
-  </div>
+</div>
 </ion-content>

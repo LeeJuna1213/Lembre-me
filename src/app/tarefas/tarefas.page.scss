@@ -8,13 +8,13 @@ ion-content{
       margin-top: -30px;
     }
 
-    .fechar, .desfazer{
+    .voltar, .desfazer{
       position: absolute;
       background-color: transparent;
-      top: 20px;  
+      top: 35px;  
       font-size: 35px;          
     }
-    .fechar{
+    .voltar{
       left: 12px;
     }
     .desfazer{
@@ -26,7 +26,7 @@ ion-content{
        display: flex;
        align-items: center;
        justify-content: center;
-       padding: 60px 0;
+       padding: 50px 0;
        flex-direction: column;
       img{
         width: 71px;
@@ -63,7 +63,7 @@ ion-content{
         }
 
         .emoji span {
-          font-size: 48px;
+          font-size: 45px;
         }
         .botao-container {
         display: flex;

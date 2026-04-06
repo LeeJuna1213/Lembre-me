@@ -1,5 +1,5 @@
 <ion-content [fullscreen]="true">
-  <button class="fechar" (click)="voltarTarefas()">
+  <button class="voltar" (click)="voltarTarefas()">
       ↩️
   </button>
   <div class="header">
@@ -24,7 +24,9 @@
     <p class="datahora" *ngIf="tarefa.feito">
       Feito em: {{ tarefa.datetime }}
     </p>
-    <p class="semfoto">Nenhuma foto foi enviada! 😟</p>
+    <div class="semfoto">
+      <p class="semfotoText">😟 <br> Nenhuma foto foi enviada! </p>
+    </div>
   </ion-card>
   <ion-card class="confirmar">
     <button class="ok" (click)="voltarTarefas()">
@@ -37,6 +39,12 @@
       class="btn-resetar"
       (click)="reiniciarTarefa()">
       🔄 Resetar tarefa
+    </button>
+  </ion-card>
+
+  <ion-card class="lembrete">
+    <button class="bnt-lembrete" (click)="irParaLembrete()">
+      ⏱️ {{ tarefa.lembrete ? 'Editar lembrete' : 'Criar lembrete' }}
     </button>
   </ion-card>
 </ion-content>

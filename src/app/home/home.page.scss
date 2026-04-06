@@ -49,7 +49,7 @@ main p {
   color: white;
   line-height: 1.2;
   padding: 0 15px;
-  margin-bottom: 130px;
+  margin-bottom: 100px;
 
   text-shadow:
     rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
@@ -60,10 +60,9 @@ ion-button {
   font-size: 2rem;
   text-transform: none;
   color: white;
-  margin-bottom: 140px;
+  margin-bottom: 30px;
 
   --border-radius: 16px;
-  min-width: min(250px, 80vw);
-  --padding-top: 10px;
-  --padding-bottom: 10px; 
+  width: 230px;
+  height: 50px;
 }

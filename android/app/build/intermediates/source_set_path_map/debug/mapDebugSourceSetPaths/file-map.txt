@@ -41,5 +41,6 @@ com.jully.lembreme.app-debug-39 C:\Users\jully\OneDrive\Desktop\lembre-me\node_m
 com.jully.lembreme.app-debug-40 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\camera\android\build\intermediates\packaged_res\debug\packageDebugResources
 com.jully.lembreme.app-debug-41 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\haptics\android\build\intermediates\packaged_res\debug\packageDebugResources
 com.jully.lembreme.app-debug-42 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\keyboard\android\build\intermediates\packaged_res\debug\packageDebugResources
-com.jully.lembreme.app-debug-43 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\splash-screen\android\build\intermediates\packaged_res\debug\packageDebugResources
-com.jully.lembreme.app-debug-44 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\status-bar\android\build\intermediates\packaged_res\debug\packageDebugResources
+com.jully.lembreme.app-debug-43 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\local-notifications\android\build\intermediates\packaged_res\debug\packageDebugResources
+com.jully.lembreme.app-debug-44 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\splash-screen\android\build\intermediates\packaged_res\debug\packageDebugResources
+com.jully.lembreme.app-debug-45 C:\Users\jully\OneDrive\Desktop\lembre-me\node_modules\@capacitor\status-bar\android\build\intermediates\packaged_res\debug\packageDebugResources

@@ -4,6 +4,8 @@ import { IonicModule } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Tarefa } from '../interfaces/tarefas.interfaces';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { NotificacoesService } from '../services/notificacoes.services';
+
 
 @Component({
   selector: 'app-fazer-tarefa',
@@ -18,7 +20,8 @@ export class FazerTarefaPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private notificacoes: NotificacoesService
   ) {}
 
   ngOnInit() {
@@ -27,6 +30,7 @@ export class FazerTarefaPage implements OnInit {
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
+    // ✅ IDs sequenciais — comparação direta e segura
     const encontrada = tarefas.find(t => t.id === id);
 
     if (!encontrada) {
@@ -36,7 +40,6 @@ export class FazerTarefaPage implements OnInit {
 
     this.tarefa = { ...encontrada };
 
-    // Controle de reload da foto (proteção contra bug)
     if (this.tarefa.foto) {
       this.tarefa.fotoReloads = (this.tarefa.fotoReloads ?? 0) + 1;
 
@@ -49,7 +52,6 @@ export class FazerTarefaPage implements OnInit {
     }
   }
 
-  // Tirar foto (funciona no browser e no celular)
   async tirarFoto() {
     try {
       const imagem = await Camera.getPhoto({
@@ -62,14 +64,11 @@ export class FazerTarefaPage implements OnInit {
       if (!imagem?.dataUrl) return;
 
       const imagemReduzida = await this.redimensionarImagem(imagem.dataUrl);
-
       this.tarefa.foto = imagemReduzida;
       this.tarefa.fotoReloads = 0;
-
       this.salvarAtualizacao();
 
     } catch (erro: any) {
-      // Cancelamento da câmera não é erro real
       if (erro?.message?.includes('User cancelled')) {
         console.log('Usuário cancelou a câmera');
       } else {
@@ -78,39 +77,30 @@ export class FazerTarefaPage implements OnInit {
     }
   }
 
-  // Redimensionar + comprimir imagem (essencial para localStorage)
   private redimensionarImagem(base64: string): Promise<string> {
     return new Promise(resolve => {
       const img = new Image();
       img.src = base64;
-
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const maxWidth = 480;
-
         const scale = Math.min(1, maxWidth / img.width);
-
-        canvas.width = img.width * scale;
+        canvas.width  = img.width  * scale;
         canvas.height = img.height * scale;
-
         const ctx = canvas.getContext('2d')!;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
         resolve(canvas.toDataURL('image/jpeg', 0.4));
       };
     });
   }
 
-  //  Concluir tarefa
   confirmarTarefa() {
     this.tarefa.feito = true;
     this.tarefa.datetime = new Date().toLocaleString();
-
     this.salvarAtualizacao();
     this.router.navigate(['/tarefas']);
   }
 
-  //  Salvar alterações
   salvarAtualizacao() {
     if (!this.tarefa?.id) return;
 
@@ -124,22 +114,27 @@ export class FazerTarefaPage implements OnInit {
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
-  //  Excluir tarefa
-  excluirTarefa() {
+  async excluirTarefa() {
+    // ✅ Cancela notificações ANTES de remover do localStorage
+    await this.notificacoes.cancelar(this.tarefa.id);
+
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
     const atualizadas = tarefas.filter(t => t.id !== this.tarefa.id);
-
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
 
     this.router.navigate(['/tarefas']);
   }
 
-  //  Voltar
-  voltarTarefas() {
+  voltar() {
     this.router.navigate(['/tarefas']);
   }
 
+ irParaLembrete() {
+    this.router.navigate(
+      ['/add-lembrete', this.tarefa.id],
+      { queryParams: { origem: 'fazer' } }
+    );
+  }
 }
-

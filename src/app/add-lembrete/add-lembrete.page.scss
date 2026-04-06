@@ -1,0 +1,128 @@
+ion-content{
+  --background: linear-gradient(
+  180deg,
+  rgb(142, 178, 241) 0%,
+  rgba(202, 99, 204, 1) 100%
+  );
+
+  .voltar, .desfazer{
+    position: absolute;
+    background-color: transparent;
+    top: 35px;  
+    font-size: 35px;          
+  }
+  .voltar{
+    left: 12px;
+  }
+  .desfazer{
+    right: 12px; 
+  }
+
+
+  .header{
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .emoji {
+    font-size: 70px;
+    margin: 0;
+  }
+
+  .titulo{
+    font-size: 2rem;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .card-lembrete ion-item {
+   --background: transparent;
+  }
+  .card-lembrete{
+    --background: var(--ion-color-primary);
+    border-radius: 16px;
+    text-align: center;
+  }
+  .select-native {
+    background: transparent;
+    border: none;
+    outline: none;
+    margin-right: 25px;
+  }
+
+  .select-native option {
+    background: white;
+    border-radius: 20px;
+  }
+
+  .card-lembrete ion-datetime{
+    border-radius: 25px;
+    color: black;
+  }
+
+  .repetir{
+      margin-left: 20px;
+  }
+
+  .horario{
+    text-align: center;
+  }
+
+  .tituloSemanal{
+    color: rgb(56, 47, 47);
+  }
+  .semanal{
+    color: black;
+  }
+
+  ion-chip.selecionado {
+    --background: white;
+    --color: black;
+    transform: scale(1);
+    padding: 30px;
+  }
+
+  ion-chip {
+    --background: #ebb7eb;
+    transition: all .2s ease;
+  }
+
+
+
+    .bnt-add-lembrete{
+      border-radius: 12px;
+    }
+
+    .select-recorrencia {
+      --background: transparent;
+
+      font-size: 16px;
+      text-align: center;
+    }
+
+   .addLembrete{
+        width: 100%;
+        height: 55px;
+
+
+        border: none;
+        border-radius: 12px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        font-size: 20px;
+        font-weight: 500;
+        font-family: Kameron;
+
+        background-color: var(--ion-color-success);
+        color: var(--ion-color-success-contrast);
+
+
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    } 
+
+  
+}

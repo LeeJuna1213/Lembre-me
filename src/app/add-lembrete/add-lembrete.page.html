@@ -1,0 +1,58 @@
+<ion-content [fullscreen]="true">
+  <button class="voltar" (click)="voltar()">
+      ↩️
+  </button>
+   <button type="button" class="desfazer" (click)="desfazerUma()">
+    🔄
+  </button>
+  <div class="header">
+    <p class="emoji">🔔</p>
+    <p class="titulo">Lembrete</p>
+  </div>
+
+  <ion-card class="card-lembrete">
+    <ion-item>
+      <ion-label class="repetir">🔁 Recorrência:</ion-label>
+      <div class="select">
+        <select class="select-native" [(ngModel)]="recorrencia">
+          <option value="diario">🗓️ Diário</option>
+          <option value="semanal">🗓️ Semanal</option>
+          <option value="mensal">🗓️ Mensal</option> 
+        </select> 
+      </div>
+    </ion-item>
+  </ion-card>
+
+  <ion-card class="card-lembrete">
+    <ion-item>
+    <ion-label class="horario">⏱️ Horário</ion-label>
+
+    <ion-datetime
+      presentation="time"
+      [(ngModel)]="horarioISO">
+    </ion-datetime>
+
+  </ion-item>
+  </ion-card>
+  <ion-card class="card-lembrete">
+    <div *ngIf="recorrencia === 'semanal'">
+
+      <h2 class="tituloSemanal">Dias da semana</h2>
+
+      <ion-chip
+      *ngFor="let dia of diasSemana"
+      (click)="toggleDia(dia)"
+      [class.selecionado]="dia.selecionado">
+
+      {{ dia.nome }}
+    </ion-chip>
+
+    </div>
+  </ion-card>
+  <ion-card class="bnt-add-lembrete">
+    <button class="addLembrete" 
+    (click)="salvarLembrete()">
+      OK!👍
+    </button>
+  </ion-card>
+</ion-content>

@@ -1,5 +1,5 @@
 <ion-content [fullscreen]="true">
-   <button class="fechar" (click)="voltarTarefas()">
+   <button class="voltar" (click)="voltar()">
     ↩️
   </button>
    <div class="tarefa-info">
@@ -18,17 +18,27 @@
     📸 Tirar foto para comprovar
   </button>
   </ion-card>
-     
+
+  <ion-card class="concluir">
   <button class="bnt-concluir" 
   (click)="confirmarTarefa()">
     ✅ Concluir tarefa
   </button> 
+  </ion-card> 
 
-  <button
-  class="bnt-excluir"
-  *ngIf="tarefa.id > 3"
-  (click)="excluirTarefa()"
-  >
-  🗑️ Excluir tarefa
-  </button>
+  <ion-card class="lembrete">
+    <button class="bnt-lembrete" (click)="irParaLembrete()">
+      ⏱️ {{ tarefa.lembrete ? 'Editar lembrete' : 'Criar lembrete' }}
+    </button>
+  </ion-card>
+  
+  <ion-card class="excluir">
+    <button
+      class="bnt-excluir"
+      *ngIf="tarefa.id > 3"
+      (click)="excluirTarefa()"
+      >
+      🗑️ Excluir tarefa
+      </button>
+  </ion-card>
 </ion-content>
