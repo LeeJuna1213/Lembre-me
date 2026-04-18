@@ -22,7 +22,7 @@
   </ion-card>
   <ion-card class="card-foto" *ngIf="!tarefa.foto">
     <p class="datahora" *ngIf="tarefa.feito">
-      Feito em: {{ tarefa.datetime }}
+      ✅ Feito em: {{tarefa.datetime | date:'dd/MM/yy HH:mm'}}
     </p>
     <div class="semfoto">
       <p class="semfotoText">😟 <br> Nenhuma foto foi enviada! </p>

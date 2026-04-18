@@ -77,6 +77,16 @@ ion-content {
     rgba(202, 99, 204, 0.9) 100%
   );
 }
+  .btn-cancelar {
+    color: #254705 !important;
+    font-weight: bold;
+  }
+
+  /* Botão excluir */
+  .btn-excluir {
+    color: #7e1207 !important;
+    font-weight: bold;
+  }
 /* 
 ion-button.main-button {
   font-size: 2rem;

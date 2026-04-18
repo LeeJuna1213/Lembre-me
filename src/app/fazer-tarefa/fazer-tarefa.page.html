@@ -35,10 +35,16 @@
   <ion-card class="excluir">
     <button
       class="bnt-excluir"
-      *ngIf="tarefa.id > 3"
       (click)="excluirTarefa()"
       >
       🗑️ Excluir tarefa
       </button>
+  </ion-card>
+
+  <ion-card class="reset-diario">
+  <button class="bnt-reset-diario" 
+  (click)="toggleResetDiario()">
+   🔃🗓️ {{ resetDiarioAtivo ? 'Desativar reset diário' : 'Ativar reset diário' }}
+  </button> 
   </ion-card>
 </ion-content>

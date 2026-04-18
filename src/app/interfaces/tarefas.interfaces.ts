@@ -2,19 +2,17 @@ export interface Tarefa {
   id: number;
   titulo: string;
   emoji: string;
-  datetime?: string; 
-  feito: boolean;   
+  feito: boolean;
+
+  datetime?: string;
   foto?: string;
   fotoReloads?: number;
 
   lembrete?: {
-    tipo: 'diario' | 'semanal' | 'mensal';
+    tipo: 'umdia' | 'diario' | 'semanal';
     hora: string;
 
-    // 🔁 semanal
+  
     diasSemana?: number[];
-
-    // 📆 mensal (NOVO)
-    diaMes?: number;
   };
 }

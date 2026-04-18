@@ -20,14 +20,17 @@ export class NotificacoesService {
 
     data.setHours(hora, minuto, 0, 0);
 
+    // ⏰ Apenas um dia / diário
     if (weekday === undefined) {
       if (data <= agora) data.setDate(data.getDate() + 1);
       return data;
     }
 
+    // 📅 Semanal
     const hoje = agora.getDay();
     let diff = weekday - hoje;
     if (diff < 0 || (diff === 0 && data <= agora)) diff += 7;
+
     data.setDate(data.getDate() + diff);
     return data;
   }
@@ -39,11 +42,11 @@ export class NotificacoesService {
     await LocalNotifications.cancel({ notifications: ids });
   }
 
-  // 🔥 Cancela TODAS as notificações do app
+  // 🔥 Cancela TODAS as notificações
   async cancelarTodas() {
     const pendentes = await LocalNotifications.getPending();
 
-    if (pendentes.notifications.length > 0) {
+    if (pendentes.notifications.length) {
       await LocalNotifications.cancel({
         notifications: pendentes.notifications.map(n => ({ id: n.id }))
       });
@@ -54,13 +57,30 @@ export class NotificacoesService {
     const perm = await LocalNotifications.requestPermissions();
     if (perm.display !== 'granted' || !tarefa.lembrete) return;
 
-    // 🛑 Garante que não fica notificação antiga
+    // 🛑 Remove notificações antigas da tarefa
     await this.cancelar(tarefa.id);
 
     const [hora, minuto] = tarefa.lembrete.hora.split(':').map(Number);
     const base = this.baseId(tarefa.id);
     const notificacoes: any[] = [];
-    const diasTexto = tarefa.lembrete.diasSemana?.map(d => this.nomeDia(d)).join(', ');
+
+    const extra = { tarefaId: tarefa.id };
+
+    // 🗓️ Apenas um dia
+    if (tarefa.lembrete.tipo === 'umdia') {
+      notificacoes.push({
+        id: base,
+        title: '🗓️ Lembrete',
+        body: tarefa.titulo,
+        smallIcon: 'ic_stat_name',
+        channelId: 'lembretes',
+        extra,
+        schedule: {
+          at: this.proximaData(hora, minuto),
+          allowWhileIdle: true
+        }
+      });
+    }
 
     // 🔁 Diário
     if (tarefa.lembrete.tipo === 'diario') {
@@ -68,7 +88,9 @@ export class NotificacoesService {
         id: base,
         title: '⏰ Lembrete Diário',
         body: tarefa.titulo,
+        smallIcon: 'ic_stat_name',
         channelId: 'lembretes',
+        extra,
         schedule: {
           at: this.proximaData(hora, minuto),
           every: 'day',
@@ -78,17 +100,22 @@ export class NotificacoesService {
     }
 
     // 📅 Semanal
-   if (tarefa.lembrete.tipo === 'semanal') {
+    if (
+      tarefa.lembrete.tipo === 'semanal' &&
+      tarefa.lembrete.diasSemana?.length
+    ) {
       const diasTexto = tarefa.lembrete.diasSemana
-        ?.map(d => this.nomeDia(d))
+        .map(d => this.nomeDia(d))
         .join(', ');
 
-      tarefa.lembrete.diasSemana?.forEach((dia, i) => {
+      tarefa.lembrete.diasSemana.forEach((dia, i) => {
         notificacoes.push({
           id: base + i + 1,
           title: '📅 Lembrete Semanal',
           body: `${tarefa.titulo} • ${diasTexto}`,
+          smallIcon: 'ic_stat_name',
           channelId: 'lembretes',
+          extra,
           schedule: {
             at: this.proximaData(hora, minuto, dia),
             every: 'week',
@@ -98,26 +125,8 @@ export class NotificacoesService {
       });
     }
 
-    // 📆 Mensal
-    if (tarefa.lembrete.tipo === 'mensal') {
-      const data = new Date();
-      data.setDate(tarefa.lembrete.diaMes!);
-      data.setHours(hora, minuto, 0, 0);
-      if (data <= new Date()) data.setMonth(data.getMonth() + 1);
-
-      notificacoes.push({
-        id: base,
-        title: '📆 Lembrete Mensal',
-        body: tarefa.titulo,
-        channelId: 'lembretes',
-        schedule: {
-          at: data,
-          every: 'month',
-          allowWhileIdle: true
-        }
-      });
+    if (notificacoes.length) {
+      await LocalNotifications.schedule({ notifications: notificacoes });
     }
-
-    await LocalNotifications.schedule({ notifications: notificacoes });
   }
 }

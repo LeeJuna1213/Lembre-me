@@ -21,7 +21,7 @@
       <ion-label>
         <h2 class="titulo">{{ tarefa.titulo }}</h2>
         <p class="datahora" *ngIf="tarefa.feito">
-          ✅Feito em: {{ tarefa.datetime }}
+          ✅ Feito em: {{tarefa.datetime | date:'dd/MM/yy HH:mm'}}
         </p>
         <p class="info-lembrete" *ngIf="tarefa.lembrete">
           ⏰ {{ textoLembrete(tarefa) }}

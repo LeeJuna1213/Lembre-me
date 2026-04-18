@@ -21,9 +21,8 @@ export class AddLembretePage implements OnInit {
 
   origem: 'fazer' | 'conferir' = 'fazer';
 
-  recorrencia: 'diario' | 'semanal' | 'mensal' = 'diario';
+  recorrencia: 'umdia' | 'diario' | 'semanal' = 'diario';
   horarioISO = '';
-  diaMes?: number;
 
   diasSemana = [
     { nome: 'Dom', valor: 0, selecionado: false },
@@ -75,7 +74,6 @@ export class AddLembretePage implements OnInit {
 
       this.recorrencia = lembrete.tipo;
       this.horarioISO = this.hhmmParaISO(lembrete.hora);
-      this.diaMes = lembrete.diaMes;
 
       if (lembrete.tipo === 'semanal') {
         this.diasSemana.forEach(d =>
@@ -88,7 +86,8 @@ export class AddLembretePage implements OnInit {
   private hhmmParaISO(hhmm: string): string {
     const [h, m] = hhmm.split(':').map(Number);
     const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}T${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:00`;
+
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
   }
 
   private isoParaHHmm(iso: string): string {
@@ -113,10 +112,6 @@ export class AddLembretePage implements OnInit {
         .map(d => d.valor);
     }
 
-    if (this.recorrencia === 'mensal') {
-      lembrete.diaMes = this.diaMes;
-    }
-
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
@@ -126,6 +121,7 @@ export class AddLembretePage implements OnInit {
     tarefas[index].lembrete = lembrete;
     localStorage.setItem('tarefas', JSON.stringify(tarefas));
 
+    // 🔔 Agenda notificações
     await this.notificacoes.agendar(tarefas[index]);
 
     this.voltar();
@@ -136,9 +132,13 @@ export class AddLembretePage implements OnInit {
       header: '🙀 Remover lembrete',
       message: `Deseja apagar o lembrete da tarefa "${this.tituloTarefa}"?`,
       buttons: [
-        { text: 'Não ❌', role: 'cancel' },
+        { text: 'Não ❌',
+          role: 'cancel',
+          cssClass: 'btn-cancelar'
+        },
         {
           text: 'Sim 🗑️',
+          cssClass: 'btn-excluir',
           role: 'destructive',
           handler: async () => {
             await this.notificacoes.cancelar(this.id);

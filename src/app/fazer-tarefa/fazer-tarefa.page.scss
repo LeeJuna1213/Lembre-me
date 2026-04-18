@@ -54,13 +54,13 @@ ion-content{
     }
    
 
-    .concluir, .excluir, .lembrete{
+    .concluir, .excluir, .lembrete, .reset-diario{
         text-align: center;
         gap: 8px;
         border-radius: 16px;
     }
 
-    .bnt-concluir, .bnt-excluir, .bnt-lembrete{
+    .bnt-concluir, .bnt-excluir, .bnt-lembrete, .bnt-reset-diario{
         width: 100%;
         height: 55px;
 
@@ -94,6 +94,9 @@ ion-content{
 
     .bnt-lembrete{
         background-color: var(--ion-color-secondary);
+    }
+    .bnt-reset-diario{
+        background-color: var(--ion-color-warning);
     }
 
    .preview-container {

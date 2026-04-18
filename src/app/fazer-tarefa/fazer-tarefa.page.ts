@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { Tarefa } from '../interfaces/tarefas.interfaces';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { NotificacoesService } from '../services/notificacoes.services';
-
 
 @Component({
   selector: 'app-fazer-tarefa',
@@ -18,19 +18,30 @@ export class FazerTarefaPage implements OnInit {
 
   tarefa!: Tarefa;
 
+  // 🔁 Reset diário
+  resetDiarioAtivo = false;
+  timeoutReset: any;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private notificacoes: NotificacoesService
+    private notificacoes: NotificacoesService,
+    private alertCtrl: AlertController
   ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
+    // 🔁 Carrega estado do reset diário
+    this.resetDiarioAtivo =
+      localStorage.getItem('resetDiarioAtivo') === 'true';
+
+    this.verificarResetDiario();
+    this.agendarResetDiario();
+
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
-    // ✅ IDs sequenciais — comparação direta e segura
     const encontrada = tarefas.find(t => t.id === id);
 
     if (!encontrada) {
@@ -40,6 +51,7 @@ export class FazerTarefaPage implements OnInit {
 
     this.tarefa = { ...encontrada };
 
+    // 📸 Controle de reload da foto
     if (this.tarefa.foto) {
       this.tarefa.fotoReloads = (this.tarefa.fotoReloads ?? 0) + 1;
 
@@ -52,6 +64,7 @@ export class FazerTarefaPage implements OnInit {
     }
   }
 
+  // 📸 Tirar foto
   async tirarFoto() {
     try {
       const imagem = await Camera.getPhoto({
@@ -69,9 +82,7 @@ export class FazerTarefaPage implements OnInit {
       this.salvarAtualizacao();
 
     } catch (erro: any) {
-      if (erro?.message?.includes('User cancelled')) {
-        console.log('Usuário cancelou a câmera');
-      } else {
+      if (!erro?.message?.includes('User cancelled')) {
         console.error('Erro ao tirar foto:', erro);
       }
     }
@@ -94,13 +105,15 @@ export class FazerTarefaPage implements OnInit {
     });
   }
 
+  // ✅ Confirmar tarefa
   confirmarTarefa() {
     this.tarefa.feito = true;
-    this.tarefa.datetime = new Date().toLocaleString();
+    this.tarefa.datetime = new Date().toISOString();
     this.salvarAtualizacao();
     this.router.navigate(['/tarefas']);
   }
 
+  // 💾 Salvar alterações
   salvarAtualizacao() {
     if (!this.tarefa?.id) return;
 
@@ -114,24 +127,105 @@ export class FazerTarefaPage implements OnInit {
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
+  // 🗑️ Excluir tarefa
   async excluirTarefa() {
-    // ✅ Cancela notificações ANTES de remover do localStorage
-    await this.notificacoes.cancelar(this.tarefa.id);
+    const alert = await this.alertCtrl.create({
+      header: '🙀 Excluir tarefa',
+      message: `Tem certeza que deseja excluir a tarefa "${this.tarefa.titulo}"?`,
+      buttons: [
+        { text: 'Não ❌', role: 'cancel', cssClass: 'btn-cancelar' },
+        {
+          text: 'Sim 🗑️',
+          role: 'destructive',
+          cssClass: 'btn-excluir',
+          handler: async () => {
+            await this.notificacoes.cancelar(this.tarefa.id);
 
+            const tarefas: Tarefa[] =
+              JSON.parse(localStorage.getItem('tarefas') || '[]');
+
+            const atualizadas = tarefas.filter(
+              t => t.id !== this.tarefa.id
+            );
+
+            localStorage.setItem('tarefas', JSON.stringify(atualizadas));
+            this.router.navigate(['/tarefas']);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  // 🔁 RESET DIÁRIO ============================
+
+  verificarResetDiario() {
+    if (!this.resetDiarioAtivo) return;
+
+    const hoje = new Date().toDateString();
+    const ultimoReset = localStorage.getItem('ultimoResetDiario');
+
+    if (ultimoReset !== hoje) {
+      this.resetarTarefasFeitas();
+      localStorage.setItem('ultimoResetDiario', hoje);
+    }
+  }
+
+  resetarTarefasFeitas() {
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
 
-    const atualizadas = tarefas.filter(t => t.id !== this.tarefa.id);
-    localStorage.setItem('tarefas', JSON.stringify(atualizadas));
+    const atualizadas = tarefas.map(t => ({
+      ...t,
+      feito: false,
+      datetime: undefined
+    }));
 
-    this.router.navigate(['/tarefas']);
+    localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
+  agendarResetDiario() {
+    if (!this.resetDiarioAtivo) return;
+
+    if (this.timeoutReset) clearTimeout(this.timeoutReset);
+
+    const agora = new Date();
+    const meiaNoite = new Date();
+    meiaNoite.setHours(24, 0, 0, 0);
+
+    const tempo = meiaNoite.getTime() - agora.getTime();
+
+    this.timeoutReset = setTimeout(() => {
+      this.resetarTarefasFeitas();
+      localStorage.setItem(
+        'ultimoResetDiario',
+        new Date().toDateString()
+      );
+      this.agendarResetDiario();
+    }, tempo);
+  }
+
+  toggleResetDiario() {
+    this.resetDiarioAtivo = !this.resetDiarioAtivo;
+    localStorage.setItem(
+      'resetDiarioAtivo',
+      String(this.resetDiarioAtivo)
+    );
+
+    if (this.resetDiarioAtivo) {
+      this.agendarResetDiario();
+    } else if (this.timeoutReset) {
+      clearTimeout(this.timeoutReset);
+    }
+  }
+
+  // 🔙 Navegação
   voltar() {
     this.router.navigate(['/tarefas']);
   }
 
- irParaLembrete() {
+  irParaLembrete() {
     this.router.navigate(
       ['/add-lembrete', this.tarefa.id],
       { queryParams: { origem: 'fazer' } }

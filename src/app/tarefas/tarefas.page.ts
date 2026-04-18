@@ -71,6 +71,7 @@ export class TarefasPage {
     }
   }
 
+
   irParaAddTarefa() {
     this.router.navigate(['/add-tarefa']);
   }
@@ -86,10 +87,12 @@ export class TarefasPage {
       buttons: [
         {
           text: 'Não ❌',
-          role: 'cancel'
+          role: 'cancel',
+          cssClass: 'btn-cancelar'
         },
         {
           text: 'Sim 🗑️',
+          cssClass: 'btn-excluir',
           role: 'destructive',
           handler: async () => {
             await this.notificacoes.cancelarTodas();
@@ -117,10 +120,17 @@ export class TarefasPage {
 
     const hora = lembrete.hora;
 
+    // 🗓️ Apenas um dia
+    if (lembrete.tipo === 'umdia') {
+      return `Hoje às ${hora}`;
+    }
+
+    // 🔁 Diário
     if (lembrete.tipo === 'diario') {
       return `Diário às ${hora}`;
     }
 
+    // 📅 Semanal
     if (lembrete.tipo === 'semanal') {
       const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -129,10 +139,6 @@ export class TarefasPage {
         .join(', ');
 
       return `Semanal: ${dias} às ${hora}`;
-    }
-
-    if (lembrete.tipo === 'mensal') {
-      return `Mensal: dia ${lembrete.diaMes} às ${hora}`;
     }
 
     return '';
