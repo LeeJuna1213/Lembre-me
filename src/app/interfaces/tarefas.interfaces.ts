@@ -6,13 +6,12 @@ export interface Tarefa {
 
   datetime?: string;
   foto?: string;
+  observacao?: string;
   fotoReloads?: number;
 
   lembrete?: {
     tipo: 'umdia' | 'diario' | 'semanal';
     hora: string;
-
-  
     diasSemana?: number[];
   };
 }

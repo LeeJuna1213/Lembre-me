@@ -8,26 +8,47 @@
         <p>Conferir</p>
       </div>
   </div>
-  <ion-card class="card-foto" *ngIf="tarefa.foto">
-    <p class="datahora" *ngIf="tarefa.feito">
-      Feito em: {{ tarefa.datetime }}
-    </p>
-    <div class="preview-container">
-      <img
-        [src]="tarefa.foto"
-        alt="Foto de comprovação"
-        class="preview-foto"
-      />
+  <ion-card class="card-foto">
+      <p class="datahora" *ngIf="tarefa.feito">
+        ✅ Feito em: {{ tarefa.datetime | date:'dd/MM/yy HH:mm' }}
+      </p>
+
+      <div class="preview-container" *ngIf="tarefa.foto; else semFoto">
+        <img
+          [src]="tarefa.foto"
+          alt="Foto de comprovação"
+          class="preview-foto"
+        />
+      </div>
+
+      <ng-template #semFoto>
+        <div class="semfoto">
+          <p class="semfotoText">😟 <br> Nenhuma foto foi enviada!</p>
+        </div>
+      </ng-template>
+
+      <div class="observacao-container" *ngIf="tarefa.observacao">
+        <p class="observacao-texto">
+          📝 {{ tarefa.observacao }}
+        </p>
+      </div>
+      <div class="campo-observacao" *ngIf="mostrarObs">
+        <ion-textarea
+          [(ngModel)]="observacaoTexto"
+          placeholder="Escreva uma observação sobre a tarefa..."
+          autoGrow="true">
+        </ion-textarea>
+        <div class="bnts-obs">
+          <button class="cancelar" (click)="fecharObservacao()">
+            ❌ Cancelar
+          </button>
+          <button class="salvar" (click)="salvarObservacao()">
+            💾 Salvar observação
+          </button>
+        </div>
     </div>
   </ion-card>
-  <ion-card class="card-foto" *ngIf="!tarefa.foto">
-    <p class="datahora" *ngIf="tarefa.feito">
-      ✅ Feito em: {{tarefa.datetime | date:'dd/MM/yy HH:mm'}}
-    </p>
-    <div class="semfoto">
-      <p class="semfotoText">😟 <br> Nenhuma foto foi enviada! </p>
-    </div>
-  </ion-card>
+  
   <ion-card class="confirmar">
     <button class="ok" (click)="voltarTarefas()">
       OK! 👌
@@ -39,6 +60,14 @@
       class="btn-resetar"
       (click)="reiniciarTarefa()">
       🔄 Resetar tarefa
+    </button>
+  </ion-card>
+
+  <ion-card class="observacao">
+    <button
+      class="bnt-observacao"
+      (click)="observacao()">
+      {{ tarefa.observacao ? '🗑️ Excluir observação' : '📝 Adicionar observação' }}
     </button>
   </ion-card>
 

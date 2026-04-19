@@ -31,6 +31,13 @@
       ⏱️ {{ tarefa.lembrete ? 'Editar lembrete' : 'Criar lembrete' }}
     </button>
   </ion-card>
+
+  <ion-card class="reset-diario">
+  <button class="bnt-reset-diario" 
+  (click)="toggleResetDiario()">
+   🔃🗓️ {{ resetDiarioAtivo ? 'Desativar reset diário' : 'Ativar reset diário' }}
+  </button> 
+  </ion-card>
   
   <ion-card class="excluir">
     <button
@@ -41,10 +48,4 @@
       </button>
   </ion-card>
 
-  <ion-card class="reset-diario">
-  <button class="bnt-reset-diario" 
-  (click)="toggleResetDiario()">
-   🔃🗓️ {{ resetDiarioAtivo ? 'Desativar reset diário' : 'Ativar reset diário' }}
-  </button> 
-  </ion-card>
 </ion-content>
