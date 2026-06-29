@@ -41,6 +41,8 @@
 
 :root {
   --ion-font-family: 'Kameron', serif;
+  --ion-safe-area-top: env(safe-area-inset-top);
+  --ion-safe-area-bottom: env(safe-area-inset-bottom);
 }
 
 html,
@@ -87,15 +89,3 @@ ion-content {
     color: #7e1207 !important;
     font-weight: bold;
   }
-/* 
-ion-button.main-button {
-  font-size: 2rem;
-  text-transform: none;
-  color: white;
-
-  --border-radius: 16px;
-  --max-height: 70px;
-  min-width: min(250px, 80vw);
-  --padding-top: 5px;
-  --padding-bottom: 5px;
-} */

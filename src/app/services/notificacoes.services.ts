@@ -92,34 +92,30 @@ export class NotificacoesService {
         channelId: 'lembretes',
         extra,
         schedule: {
-          at: this.proximaData(hora, minuto),
+          // ✅ on + every — sem at, sem ambiguidade
           every: 'day',
-          allowWhileIdle: true
+          on: { hour: hora, minute: minuto },
+          allowWhileIdle: true,
+          androidExact: true
         }
       });
     }
 
     // 📅 Semanal
-    if (
-      tarefa.lembrete.tipo === 'semanal' &&
-      tarefa.lembrete.diasSemana?.length
-    ) {
-      const diasTexto = tarefa.lembrete.diasSemana
-        .map(d => this.nomeDia(d))
-        .join(', ');
-
+    if (tarefa.lembrete.tipo === 'semanal' && tarefa.lembrete.diasSemana?.length) {
       tarefa.lembrete.diasSemana.forEach((dia, i) => {
         notificacoes.push({
           id: base + i + 1,
           title: '📅 Lembrete Semanal',
-          body: `${tarefa.titulo} • ${diasTexto}`,
+          body: `${tarefa.titulo} • ${tarefa.lembrete!.diasSemana!.map(d => this.nomeDia(d)).join(', ')}`,
           smallIcon: 'ic_stat_name',
           channelId: 'lembretes',
           extra,
           schedule: {
-            at: this.proximaData(hora, minuto, dia),
             every: 'week',
-            allowWhileIdle: true
+            on: { weekday: dia + 1, hour: hora, minute: minuto }, // Capacitor: 1=Dom..7=Sab
+            allowWhileIdle: true,
+            androidExact: true
           }
         });
       });

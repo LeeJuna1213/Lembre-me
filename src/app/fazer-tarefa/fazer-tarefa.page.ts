@@ -27,7 +27,7 @@ export class FazerTarefaPage implements OnInit {
     private router: Router,
     private notificacoes: NotificacoesService,
     private alertCtrl: AlertController
-  ) {}
+  ) { }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -96,7 +96,7 @@ export class FazerTarefaPage implements OnInit {
         const canvas = document.createElement('canvas');
         const maxWidth = 480;
         const scale = Math.min(1, maxWidth / img.width);
-        canvas.width  = img.width  * scale;
+        canvas.width = img.width * scale;
         canvas.height = img.height * scale;
         const ctx = canvas.getContext('2d')!;
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -108,7 +108,7 @@ export class FazerTarefaPage implements OnInit {
   // ✅ Confirmar tarefa
   confirmarTarefa() {
     this.tarefa.feito = true;
-    this.tarefa.datetime = new Date().toISOString();
+    this.tarefa.datetime = new Date().toISOString(); // ✅
     this.salvarAtualizacao();
     this.router.navigate(['/tarefas']);
   }
@@ -178,6 +178,7 @@ export class FazerTarefaPage implements OnInit {
 
     const atualizadas = tarefas.map(t => ({
       ...t,
+      observacao:"",
       feito: false,
       datetime: undefined
     }));

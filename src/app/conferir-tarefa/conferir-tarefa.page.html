@@ -1,72 +1,57 @@
 <ion-content [fullscreen]="true">
-  <button class="voltar" (click)="voltarTarefas()">
-      ↩️
-  </button>
+  <button class="voltar" (click)="voltarTarefas()">↩️</button>
+
   <div class="header">
-      <div class="emoji2">
-        <img src="assets/emoji2.png" alt="emoji de olhos">
-        <p>Conferir</p>
-      </div>
+    <div class="emoji2">
+      <img src="assets/emoji2.png" alt="emoji de olhos">
+      <p>Conferir</p>
+    </div>
   </div>
+
   <ion-card class="card-foto">
-      <p class="datahora" *ngIf="tarefa.feito">
-        ✅ Feito em: {{ tarefa.datetime | date:'dd/MM/yy HH:mm' }}
-      </p>
+    <!-- ✅ método no lugar do pipe date -->
+    <p class="datahora" *ngIf="tarefa.feito">
+      ✅ {{ formatarDataFeito(tarefa.datetime) }}
+    </p>
 
-      <div class="preview-container" *ngIf="tarefa.foto; else semFoto">
-        <img
-          [src]="tarefa.foto"
-          alt="Foto de comprovação"
-          class="preview-foto"
-        />
+    <div class="preview-container" *ngIf="tarefa.foto; else semFoto">
+      <img [src]="tarefa.foto" alt="Foto de comprovação" class="preview-foto" />
+    </div>
+
+    <ng-template #semFoto>
+      <div class="semfoto">
+        <p class="semfotoText">😟 <br> Nenhuma foto foi enviada!</p>
       </div>
+    </ng-template>
 
-      <ng-template #semFoto>
-        <div class="semfoto">
-          <p class="semfotoText">😟 <br> Nenhuma foto foi enviada!</p>
-        </div>
-      </ng-template>
+    <div class="observacao-container" *ngIf="tarefa.observacao">
+      <p class="observacao-texto">📝 {{ tarefa.observacao }}</p>
+    </div>
 
-      <div class="observacao-container" *ngIf="tarefa.observacao">
-        <p class="observacao-texto">
-          📝 {{ tarefa.observacao }}
-        </p>
+    <div class="campo-observacao" *ngIf="mostrarObs">
+      <ion-textarea
+        class="textarea-obs"
+        [(ngModel)]="observacaoTexto"
+        placeholder="Escreva uma observação sobre a tarefa..."
+        autoGrow="true">
+      </ion-textarea>
+      <div class="bnts-obs">
+        <button class="cancelar" (click)="fecharObservacao()">❌ Excluir</button>
+        <button class="salvar" (click)="salvarObservacao()">💾 Salvar</button>
       </div>
-      <div class="campo-observacao" *ngIf="mostrarObs">
-        <ion-textarea
-          [(ngModel)]="observacaoTexto"
-          placeholder="Escreva uma observação sobre a tarefa..."
-          autoGrow="true">
-        </ion-textarea>
-        <div class="bnts-obs">
-          <button class="cancelar" (click)="fecharObservacao()">
-            ❌ Cancelar
-          </button>
-          <button class="salvar" (click)="salvarObservacao()">
-            💾 Salvar observação
-          </button>
-        </div>
     </div>
   </ion-card>
-  
+
   <ion-card class="confirmar">
-    <button class="ok" (click)="voltarTarefas()">
-      OK! 👌
-    </button>
+    <button class="ok" (click)="voltarTarefas()">OK! 👌</button>
   </ion-card>
 
   <ion-card class="resetar">
-    <button
-      class="btn-resetar"
-      (click)="reiniciarTarefa()">
-      🔄 Resetar tarefa
-    </button>
+    <button class="btn-resetar" (click)="reiniciarTarefa()">🔄 Resetar tarefa</button>
   </ion-card>
 
   <ion-card class="observacao">
-    <button
-      class="bnt-observacao"
-      (click)="observacao()">
+    <button class="bnt-observacao" (click)="observacao()">
       {{ tarefa.observacao ? '🗑️ Excluir observação' : '📝 Adicionar observação' }}
     </button>
   </ion-card>

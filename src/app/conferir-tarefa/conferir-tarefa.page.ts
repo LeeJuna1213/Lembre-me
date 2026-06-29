@@ -11,12 +11,13 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './conferir-tarefa.page.html',
   styleUrls: ['./conferir-tarefa.page.scss'],
   standalone: true,
-  imports:[IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule]
 })
-
 export class ConferirTarefaPage implements OnInit {
 
   tarefa!: Tarefa;
+  mostrarObs = false;
+  observacaoTexto: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -26,10 +27,7 @@ export class ConferirTarefaPage implements OnInit {
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
-
+    const tarefas: Tarefa[] = JSON.parse(localStorage.getItem('tarefas') || '[]');
     const encontrada = tarefas.find(t => t.id === id);
 
     if (!encontrada) {
@@ -39,21 +37,35 @@ export class ConferirTarefaPage implements OnInit {
 
     this.tarefa = encontrada;
   }
-  mostrarObs = false;
-  observacaoTexto: string = '';
+
+  formatarDataFeito(datetime: string | undefined): string {
+    if (!datetime) return '';
+
+    const dataFeito = new Date(datetime);
+    if (isNaN(dataFeito.getTime())) return `Feito em ${datetime}`;
+
+    const agora = new Date();
+    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+    const diaFeito = new Date(dataFeito.getFullYear(), dataFeito.getMonth(), dataFeito.getDate());
+
+    const diffDias = Math.round((hoje.getTime() - diaFeito.getTime()) / (1000 * 60 * 60 * 24));
+    const hora = dataFeito.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    if (diffDias === 0) return `Feito hoje às ${hora}`;
+    if (diffDias === 1) return `Feito ontem às ${hora}`;
+    if (diffDias === 2) return `Feito anteontem às ${hora}`;
+    if (diffDias <= 7) return `Feito há ${diffDias} dias`;
+
+    return `Feito em ${dataFeito.toLocaleDateString('pt-BR')} às ${hora}`;
+  }
 
   async observacao() {
-    // SE JÁ EXISTE OBSERVAÇÃO → PERGUNTA SE QUER EXCLUIR
     if (this.tarefa.observacao) {
       const alert = await this.alertController.create({
         header: '🙀 Excluir observação',
         message: 'Tem certeza que deseja excluir a observação?',
         buttons: [
-          {
-            text: 'Não ❌',
-            role: 'cancel',
-            cssClass: 'btn-cancelar'
-          },
+          { text: 'Não ❌', role: 'cancel', cssClass: 'btn-cancelar' },
           {
             text: 'Sim 🗑️',
             role: 'destructive',
@@ -67,62 +79,72 @@ export class ConferirTarefaPage implements OnInit {
           }
         ]
       });
-
       await alert.present();
-    } 
-    // SE NÃO EXISTE → MOSTRA O CAMPO PARA ESCREVER
-    else {
+    } else {
       this.mostrarObs = true;
     }
   }
 
   salvarObservacao() {
     if (!this.observacaoTexto.trim()) return;
-
     this.tarefa.observacao = this.observacaoTexto.trim();
     this.observacaoTexto = '';
     this.mostrarObs = false;
-
     this.salvarAtualizacao();
   }
+
   fecharObservacao() {
     this.mostrarObs = false;
-    this.observacaoTexto = ''; 
   }
 
   salvarAtualizacao() {
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
-
-    const atualizadas = tarefas.map(t =>
-      t.id === this.tarefa.id ? { ...this.tarefa } : t
-    );
-
+    const tarefas: Tarefa[] = JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const atualizadas = tarefas.map(t => t.id === this.tarefa.id ? { ...this.tarefa } : t);
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
-   voltarTarefas() {
+  voltarTarefas() {
     this.router.navigate(['/tarefas']);
   }
-  
-    reiniciarTarefa() {
+
+  async reiniciarTarefa() {
+    const alert = await this.alertController.create({
+      header: '🙀 Reiniciar tarefa?',
+      message: 'A tarefa, observação e lembrete serão reiniciados.',
+      buttons: [
+        { text: 'Não ❌',
+          role: 'cancel',
+          cssClass: 'btn-cancelar' },
+        {
+          text: 'Sim 🗑️',
+          cssClass: 'btn-excluir',
+          role: 'destructive',
+          handler: () => {
+            this.executarReset();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  private executarReset() {
     this.tarefa.feito = false;
     this.tarefa.datetime = undefined;
     this.tarefa.foto = undefined;
     this.tarefa.fotoReloads = undefined;
+    this.tarefa.observacao = undefined;
 
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
-
-    const atualizadas = tarefas.map(t =>
-      t.id === this.tarefa.id ? { ...this.tarefa } : t
+    const tarefas: Tarefa[] = JSON.parse(localStorage.getItem('tarefas') || '[]');
+    localStorage.setItem(
+      'tarefas',
+      JSON.stringify(tarefas.map(t => t.id === this.tarefa.id ? { ...this.tarefa } : t))
     );
-
-    localStorage.setItem('tarefas', JSON.stringify(atualizadas));
 
     this.router.navigate(['/fazer-tarefa', this.tarefa.id]);
   }
-  
+
   irParaLembrete() {
     this.router.navigate(
       ['/add-lembrete', this.tarefa.id],
@@ -130,4 +152,3 @@ export class ConferirTarefaPage implements OnInit {
     );
   }
 }
-
