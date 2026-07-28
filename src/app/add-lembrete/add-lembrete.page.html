@@ -14,45 +14,41 @@
     <ion-item>
       <ion-label class="repetir">🔁 Repetir:</ion-label>
       <div class="select">
-        <select class="select-native" [(ngModel)]="recorrencia">
-          <option value="umdia">🗓️ Apenas hoje</option>
-          <option value="diario">🗓️ Todo dia</option>
-          <option value="semanal">🗓️ Durante a semana</option>
-        </select> 
+        <ion-select
+          class="select-native"
+          interface="popover"
+          [interfaceOptions]="{ cssClass: 'recorrencia-popover' }"
+          [(ngModel)]="recorrencia">
+          <ion-select-option value="umdia">🗓️ Apenas hoje</ion-select-option>
+          <ion-select-option value="diario">🗓️ Todo dia</ion-select-option>
+          <ion-select-option value="semanal">🗓️ Durante a semana</ion-select-option>
+        </ion-select>
       </div>
     </ion-item>
   </ion-card>
 
-  <ion-card class="card-lembrete">
-    <ion-item>
-    <ion-label class="horario">⏱️ Horário</ion-label>
-
-    <ion-datetime
-      presentation="time"
-      [(ngModel)]="horarioISO">
-    </ion-datetime>
-
-  </ion-item>
+  <ion-card class="card-lembrete card-relogio">
+    <p class="horario">⏱️ Horário</p>
+    <app-relogio-horario [valor]="horario" (valorChange)="horario = $event"></app-relogio-horario>
   </ion-card>
-  <ion-card class="card-lembrete">
-    <div *ngIf="recorrencia === 'semanal'">
+  <ion-card class="card-dias" *ngIf="recorrencia === 'semanal'">
 
-      <h2 class="tituloSemanal">Dias da semana</h2>
+  <h2 class="tituloSemanal">Dias da semana</h2>
 
-      <ion-chip
-      *ngFor="let dia of diasSemana"
-      (click)="toggleDia(dia)"
-      [class.selecionado]="dia.selecionado">
+  <ion-chip
+    *ngFor="let dia of diasSemana"
+    (click)="toggleDia(dia)"
+    [class.selecionado]="dia.selecionado">
 
-      {{ dia.nome }}
-    </ion-chip>
+    {{ dia.nome }}
+  </ion-chip>
 
-    </div>
-  </ion-card>
+</ion-card>
   <ion-card class="bnt-add-lembrete">
     <button class="addLembrete" 
     (click)="salvarLembrete()">
       OK!👍
     </button>
   </ion-card>
+  <br> <br> <br>
 </ion-content>

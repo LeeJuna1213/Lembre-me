@@ -29,12 +29,17 @@
     </div>
 
     <div class="campo-observacao" *ngIf="mostrarObs">
-      <ion-textarea
-        class="textarea-obs"
-        [(ngModel)]="observacaoTexto"
-        placeholder="Escreva uma observação sobre a tarefa..."
-        autoGrow="true">
-      </ion-textarea>
+      <div class="textarea-wrapper">
+         <textarea
+          class="textarea-obs"
+          [(ngModel)]="observacaoTexto"
+          placeholder="Escreva uma observação sobre a tarefa..."
+          maxlength="150">
+        </textarea>
+        <p class="contador">
+          {{ observacaoTexto.length }}/150
+        </p>  
+      </div>
       <div class="bnts-obs">
         <button class="cancelar" (click)="fecharObservacao()">❌ Excluir</button>
         <button class="salvar" (click)="salvarObservacao()">💾 Salvar</button>
@@ -61,4 +66,5 @@
       ⏱️ {{ tarefa.lembrete ? 'Editar lembrete' : 'Criar lembrete' }}
     </button>
   </ion-card>
+  <br> <br> <br>
 </ion-content>

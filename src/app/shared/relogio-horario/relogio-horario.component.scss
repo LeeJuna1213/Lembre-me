@@ -1,0 +1,151 @@
+// Paleta pedida: fundo branco, detalhes em rosa (seleção/ponteiro) e
+// texto/números em preto — igual ao relógio nativo de horário do Android.
+$rosa: #d9599f;
+$rosa-claro: white;
+$preto: #1a1a1a;
+
+:host {
+  display: block;
+}
+
+.relogio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  background: transparent;
+  font-family: 'Kameron', serif;
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.hora-display,
+.minuto-display {
+  background: transparent;
+  border: none;
+
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: #bbb;
+
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+
+  &.ativo {
+    color: $preto;
+    background: $rosa-claro;
+  }
+}
+
+.dois-pontos {
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: $preto;
+}
+
+.periodo {
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--space-3);
+
+  border: 1.5px solid $preto;
+  border-radius: var(--space-2);
+  overflow: hidden;
+
+  button {
+    background: transparent;
+    border: none;
+    padding: var(--space-1) var(--space-2-5);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: $preto;
+
+    &.ativo {
+      background: $rosa;
+      color: #ffffff;
+    }
+  }
+}
+
+.mostrador {
+  position: relative;
+
+  width: min(78vw, 300px);
+  height: min(78vw, 300px);
+
+  background: #f2f0f2;
+  border-radius: 50%;
+
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.centro {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  width: 8px;
+  height: 8px;
+  margin: -4px;
+
+  background: $rosa;
+  border-radius: 50%;
+  z-index: 3;
+}
+
+// Ponteiro ancorado no centro do mostrador, crescendo pra cima — em
+// rotate(0deg) aponta pro "12", igual num relógio de verdade.
+.ponteiro {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+
+  width: 2px;
+  height: 38%;
+  margin-left: -1px;
+
+  background: $rosa;
+  transform-origin: bottom center;
+  z-index: 1;
+}
+
+.numero {
+  position: absolute;
+
+  width: 40px;
+  height: 40px;
+  margin: -20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: $preto;
+  font-family: 'Kameron', serif;
+
+  z-index: 2;
+
+  &.selecionado {
+    background: $rosa;
+    color: #ffffff;
+  }
+}
+
+.numero-minuto {
+  font-size: 0.95rem;
+}

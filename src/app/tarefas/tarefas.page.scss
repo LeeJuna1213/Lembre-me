@@ -6,36 +6,36 @@ ion-content{
     rgba(202, 99, 204, 1) 100%
   );
     .header{
-      margin-top: -20px;
+      margin-top: var(--space-8);
     }
 
-    .voltar, .desfazer{
+    .sobre, .desfazer{
       position: absolute;
       background-color: transparent;
-      top: 45px;  
-      font-size: 35px;          
+      top: var(--nav-icon-top);
+      font-size: var(--nav-icon-size);
     }
-    .voltar{
-      left: 12px;
+    .sobre{
+      left: var(--space-3);
     }
     .desfazer{
-      right: 12px; 
+      right: var(--space-3);
     }
-    
+
     .emoji1{
        width: 100vw;
        display: flex;
        align-items: center;
        justify-content: center;
-       padding: 50px 0;
+       padding: var(--space-9) 0;
        flex-direction: column;
       img{
-        width: 71px;
-        height: 71px;
+        width: var(--header-emoji-size);
+        height: var(--header-emoji-size);
       }
        p{
         color: white;
-        font-size: 2rem;
+        font-size: var(--font-title);
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
        }
     }
@@ -49,9 +49,32 @@ ion-content{
           display: flex;
           flex-direction: column;
           background: var(--ion-color-primary);
-          border-radius: 16px;
-          padding: 20px;
+          border-radius: var(--card-radius);
+          padding: var(--card-padding);
           min-height: 130px;
+        }
+
+        // Garante que o card inteiro (menos o botão) continue com o mesmo
+        // layout de antes, agora que o conteúdo fica dentro de ion-reorder.
+        // user-select/touch-callout ficam desligados o tempo todo (não só
+        // durante o arraste) pra evitar que o Android abra o menu de
+        // selecionar texto durante os 0.3s de espera do toque.
+        ion-reorder {
+          display: block;
+          user-select: none;
+          -webkit-user-select: none;
+          -webkit-touch-callout: none;
+        }
+
+        @keyframes dicaArraste {
+          0%, 100% { transform: translateY(0); }
+          30% { transform: translateY(-8px); }
+          55% { transform: translateY(0); }
+          75% { transform: translateY(-4px); }
+        }
+
+        .tarefa-card.dica-arraste {
+          animation: dicaArraste 0.9s ease-in-out;
         }
         .emoji {
           width: 50px;
@@ -68,66 +91,75 @@ ion-content{
         }
         .botao-container {
         display: flex;
-        justify-content: flex-end; 
+        justify-content: flex-end;
         width: 100%;
       }
 
       .acao-btn {
-        padding: 10px 40px;
+        padding: var(--space-2-5) var(--space-8);
         min-width: 160px;
 
         background: var(--ion-color-secondary);
         color: var(--ion-color-secondary-contrast);
 
-        font-size: 16px;
+        font-size: var(--font-base);
         font-weight: 500;
 
         border: none;
-        border-radius: 999px;
+        border-radius: var(--radius-pill);
         cursor: pointer;
       }
 
       .titulo{
-        font-size: 28px;
+        font-size: clamp(1.5rem, 6vw, 1.75rem);
         color: white;
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
       }
       .datahora{
         color: var(--ion-color-secondary-contrast);
+        padding: 0px;
+        margin-left: 0.5px;
+      }
+
+      .info-lembrete{
+        color: var(--ion-color-secondary-contrast);
+        padding: 0px;
+        margin-left: 0.5px;
+        font-size: var(--font-xs);
       }
 
       .etiquetas{
         display: flex;
-        flex-wrap: wrap;      
-        gap: 10px;      
+        flex-wrap: wrap;
+        margin: 5px 0.5px;
+        gap: var(--space-2-5);
+        border-radius: var(--radius-sm);
       }
       .etiquetas span{
-        border-radius: 10px;
+        border-radius: var(--radius-sm);
         padding: 3px 5px;
-        font-size: 12px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        font-size: var(--font-2xs);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
       }
       .add{
         background-color: transparent;
-        border-radius: 16px;
+        border-radius: var(--card-radius);
       }
       .addTarefa{
-        width: 100%; 
+        width: 100%;
 
         display: flex;
-        align-items: center;        
-        justify-content: center;   
-
-        border-radius: 16px;
-        padding: 20px;
-        min-height: 90px;
+        align-items: center;
+        justify-content: center;
         flex-direction: column;
-        background: var(--ion-color-primary);
-        border-radius: 16px;
-        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-        padding: 20px;
+
+        border-radius: var(--card-radius);
+        padding: var(--card-padding);
         min-height: 90px;
-        font-size: 30px;
+
+        background: var(--ion-color-primary);
+        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+        font-size: clamp(1.5rem, 7vw, 1.875rem);
       }
    }
 }

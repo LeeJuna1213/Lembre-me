@@ -45,24 +45,24 @@ main {
 
 
 main p {
-  font-size: 2rem;
+  font-size: var(--font-title);
   color: white;
   line-height: 1.2;
-  padding: 0 15px;
-  margin-bottom: 100px;
+  padding: 0 var(--space-4);
+  margin-bottom: clamp(40px, 10vh, 100px);
 
   text-shadow:
     rgba(50, 50, 93, 0.25) 0px 13px 27px -5px,
     rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
 }
 
-ion-button { 
-  font-size: 2rem;
+ion-button {
+  font-size: var(--font-title);
   text-transform: none;
   color: white;
-  margin-bottom: 30px;
+  margin-bottom: var(--space-7);
 
-  --border-radius: 16px;
-  width: 230px;
+  --border-radius: var(--card-radius);
+  width: min(230px, 80vw);
   height: 50px;
 }

@@ -1,0 +1,132 @@
+ion-content{
+
+  --background: linear-gradient(
+    180deg,
+    rgb(142, 178, 241) 0%,
+    rgba(202, 99, 204, 1) 100%
+  );
+
+  .voltar{
+    position: absolute;
+    background-color: transparent;
+    top: var(--nav-icon-top);
+    left: var(--space-3);
+    font-size: var(--nav-icon-size);
+    z-index: 1;
+  }
+
+  .header{
+    margin-top: 65px;
+    text-align: center;
+  }
+
+  .emoji{
+    font-size: var(--font-header-emoji);
+    margin: 0;
+  }
+
+  .titulo{
+    font-size: var(--font-title);
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .foto-secao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--space-2);
+    padding: 0 var(--space-5);
+    text-align: center;
+  }
+
+  .frase-foto{
+    color: black;
+    font-size: var(--font-md);
+    margin-bottom: var(--space-3);
+  }
+
+  .foto-circulo{
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--ion-color-secondary);
+    border: 3px solid white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+
+    .foto{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .desenvolvido-por{
+    margin-top: var(--space-4);
+    color: black;
+    font-size: var(--font-base);
+  }
+
+  .redes{
+    display: flex;
+    justify-content: center;
+    gap: var(--space-5);
+    margin-top: var(--space-4);
+
+    .rede-btn{
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: white;
+      color: var(--ion-color-dark);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      transition: transform 0.15s ease;
+
+      &:active{
+        transform: scale(0.92);
+      }
+    }
+
+    .linkedin{
+      color: #0A66C2;
+    }
+
+    .github{
+      color: #171515;
+    }
+  }
+
+  .especificacoes{
+    margin: var(--space-5) var(--space-4) 0;
+    background: var(--ion-color-primary);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+    color: black;
+
+    h2{
+      font-size: var(--font-lg);
+      margin: 0 0 var(--space-3);
+    }
+
+    ul{
+      margin: 0;
+      padding-left: var(--space-5);
+      font-size: var(--font-sm);
+
+      li{
+        margin-bottom: var(--space-2);
+      }
+    }
+  }
+}

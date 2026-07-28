@@ -172,9 +172,13 @@ export class FazerTarefaPage implements OnInit {
     }
   }
 
-  resetarTarefasFeitas() {
+  async resetarTarefasFeitas() {
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
+
+    // 🔔 Só avisa as que realmente estavam feitas — são essas que "voltam"
+    // a ficar disponíveis pro usuário fazer de novo.
+    const tarefasResetadas = tarefas.filter(t => t.feito);
 
     const atualizadas = tarefas.map(t => ({
       ...t,
@@ -184,6 +188,10 @@ export class FazerTarefaPage implements OnInit {
     }));
 
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
+
+    for (const tarefa of tarefasResetadas) {
+      await this.notificacoes.notificarReset(tarefa);
+    }
   }
 
   agendarResetDiario() {

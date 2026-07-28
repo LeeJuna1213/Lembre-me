@@ -43,6 +43,60 @@
   --ion-font-family: 'Kameron', serif;
   --ion-safe-area-top: env(safe-area-inset-top);
   --ion-safe-area-bottom: env(safe-area-inset-bottom);
+
+  /* ------------------------------------------------------------------ */
+  /* Design tokens — espaçamento, raio e tipografia usados no app todo. */
+  /* Mantém as mesmas proporções visuais já existentes, só centraliza   */
+  /* os valores pra evitar números "soltos" e deixar tudo coerente.     */
+  /* ------------------------------------------------------------------ */
+
+  /* Escala de espaçamento (padding/margin/gap) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-2-5: 10px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 60px;
+
+  /* Raios de borda */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Tipografia */
+  --font-2xs: 0.75rem;   /* 12px — legendas/contadores */
+  --font-xs: 0.8125rem;  /* 13px — texto auxiliar de card */
+  --font-sm: 0.875rem;   /* 14px — botões secundários pequenos */
+  --font-base: 1rem;     /* 16px — texto padrão */
+  --font-md: 1.125rem;   /* 18px — texto padrão em destaque */
+  --font-lg: 1.25rem;    /* 20px — botões de ação principais */
+  /* Título de página: cresce um pouco em telas maiores, encolhe em telas
+     muito estreitas, sem nunca sair da proporção visual atual (~2rem). */
+  --font-title: clamp(1.65rem, 5.5vw, 2rem);
+  /* Emoji de cabeçalho quando é um caractere de texto (font-size). */
+  --font-header-emoji: clamp(3.2rem, 15vw, 4.375rem);
+  /* Emoji de cabeçalho quando é uma imagem (width/height). */
+  --header-emoji-size: clamp(64px, 18vw, 76px);
+  /* Ícone dos botões voltar/desfazer no topo da página. */
+  --nav-icon-size: clamp(1.8rem, 7vw, 2.1875rem);
+  --nav-icon-top: 50px;
+
+  /* Botões de ação principais (largura total) */
+  --btn-height: 58px;
+  --btn-radius: var(--radius-md);
+  --btn-font: var(--font-lg);
+  --btn-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+
+  /* Cards */
+  --card-radius: var(--radius-md);
+  --card-padding: var(--space-5);   /* 20px — card principal */
+  --card-padding-sm: var(--space-4); /* 16px — card/bloco secundário */
 }
 
 html,
@@ -89,3 +143,17 @@ ion-content {
     color: #7e1207 !important;
     font-weight: bold;
   }
+
+/* Lista (popover) do select de recorrência do lembrete */
+.recorrencia-popover {
+  --background: white;
+  --backdrop-opacity: 0.3;
+  --border-radius: 50px;
+  --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+
+  ion-item {
+    --background: white;
+    --color: black;
+    font-size: 18px;
+  }
+}

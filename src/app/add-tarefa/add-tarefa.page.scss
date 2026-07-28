@@ -1,53 +1,58 @@
-ion-content{
-    --background: linear-gradient(
-    180deg,
-    rgb(142, 178, 241) 0%,
-    rgba(202, 99, 204, 1) 100%
-    );
-    .voltar{
-      position: absolute;
-      background-color: transparent;
-      font-size: 35px;
-      top: 45px;           
-      left: 12px;  
-    }
-    .header{
-      margin-top: 20px;
-      text-align: center;
-    }
-     .emoji {
-    font-size: 70px;
-    margin: 0;
-    }
-    .titulo{
-        font-size: 2rem;
-        color: white;
-        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-    }
+ion-content {
+  --background: linear-gradient(180deg,
+      rgb(142, 178, 241) 0%,
+      rgba(202, 99, 204, 1) 100%);
 
-    ion-item {
+  .voltar {
+    position: absolute;
+    background-color: transparent;
+    font-size: var(--nav-icon-size);
+    top: var(--nav-icon-top);
+    left: var(--space-3);
+  }
+
+  .header {
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  .emoji {
+    font-size: var(--font-header-emoji);
+    margin: 0;
+  }
+
+  .titulo {
+    font-size: var(--font-title);
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  ion-item {
     --background: transparent;
-    }
-    .addcard {
+  }
+
+  .addcard {
     --background: var(--ion-color-primary);
-    border-radius: 16px;
-    }
-    .titulo-input{
-        color: black;
-        text-align: center;
-        font-size: 20px;
-    }
-   .input-normal {
+    border-radius: var(--card-radius);
+  }
+
+  .titulo-input {
+    color: black;
+    text-align: center;
+    font-size: var(--font-lg);
+  }
+
+  .input-normal {
     display: block;
 
     width: 90%;
     max-width: 460px;
-    margin: 0 auto 25px;
+    margin: 0 auto var(--space-6);
 
-    padding: 12px 16px;
+    padding: var(--space-3) var(--space-4);
 
     text-align: center;
-    font-size: 20px;
+    font-size: var(--font-lg);
     font-family: 'Kameron', serif;
 
     background-color: white;
@@ -58,66 +63,82 @@ ion-content{
     outline: none;
 
     box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 6px;
-    }
-    .input-normal::placeholder {
+  }
+
+  .input-normal::placeholder {
     color: rgba(0, 0, 0, 0.4);
-    }
-    .add{
-        background-color: transparent;
-        border-radius: 16px;
-    }
-    .addTarefa, .addLembrete{
-        width: 100%;
-        height: 58px;
+  }
 
+  .escolher-emoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-        border: none;
-        border-radius: 12px;
+    background-color: var(--ion-color-success);
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
+    width: 90%;
+    height: 40px;
+    border-radius: var(--radius-pill);
+    margin: var(--space-4) auto;
 
-        font-size: 20px;
-        font-weight: 500;
-        font-family: Kameron;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
 
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
-    } 
+  .btn-escolher-emoji {
+    background-color: transparent;
+    color: black;
+    font-size: var(--font-lg);
+  }
 
-    .addTarefa{
-        background-color: var(--ion-color-success);
-        color: var(--ion-color-success-contrast);
+  .add {
+    background-color: transparent;
+    border-radius: var(--card-radius);
+  }
 
-    }
+  .addTarefa {
+    width: 100%;
+    height: var(--btn-height);
 
-    .addLembrete{
-        background-color: var(--ion-color-secondary);
-        color: var(--ion-color-success-contrast);
-    }
-    
+    border: none;
+    border-radius: var(--btn-radius);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    font-size: var(--btn-font);
+    font-weight: 500;
+    font-family: Kameron;
+
+    background-color: var(--ion-color-success);
+    color: var(--ion-color-success-contrast);
+
+    box-shadow: var(--btn-shadow);
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
   .etiquetas-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 6px;
-    margin-left: 20px;
-    margin-bottom: 25px;
+    gap: var(--space-2-5);
+    margin-top: var(--space-2);
+    margin-left: var(--space-5);
+    margin-bottom: var(--space-6);
   }
 
   .etiqueta-btn {
-    border: 1.5px solid #ccc;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-    border-radius: 20px;
-    padding: 10px 12px;
+    border-radius: var(--radius-lg);
+    padding: var(--space-2-5) var(--space-3);
     color: black;
-    font-size: 0.8rem;
+    font-size: var(--font-xs);
     background: white;
     cursor: pointer;
     transition: all 0.5s;
@@ -128,5 +149,210 @@ ion-content{
     }
   }
 
+  .categoria-personalizada {
+    margin-top: 10px;
+  }
+
+  .nova-etiqueta-btn {
+    display: block;
+    margin: var(--space-2-5) auto var(--space-5);
+
+    padding: var(--space-2) var(--space-4);
+
+    font-size: var(--font-sm);
+    color: black;
+    background: white;
+
+    border-radius: var(--radius-pill);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .nova-etiqueta {
+    margin-top: var(--space-4);
+
+    .titulo-input:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .cores-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .cor-btn {
+    width: 36px;
+    height: 36px;
+
+    border-radius: 50%;
+    border: 3px solid transparent;
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    &.selecionada {
+      border-color: rgb(241, 239, 239);
+      transform: scale(1.15);
+    }
+  }
+
+  .nova-etiqueta-acoes {
+    display: flex;
+    gap: var(--space-2-5);
+    justify-content: center;
+  }
+
+  .cancelar-etiqueta,
+  .salvar-etiqueta {
+    height: 40px;
+    padding: 0 var(--space-4);
+    margin-bottom: var(--space-5);
+
+    font-size: var(--font-base);
+    border-radius: var(--radius-pill);
+
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .cancelar-etiqueta {
+    color: black;
+    background: var(--ion-color-danger);
+  }
+
+  .salvar-etiqueta {
+    color: var(--ion-color-success-contrast);
+    background: var(--ion-color-success);
+  }
+
+  .emoji-select {
+    // sem padding-top: quem cuida do espaço no topo é o .emoji-select-topo,
+    // pra ele ficar branco e colado na borda de cima do card desde o início
+    // (sem sobrar uma tira da cor do card por trás ao rolar).
+    padding: 0 var(--space-2-5) var(--space-2-5);
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--card-radius);
+    align-items: center;
+    margin: auto;
+    width: 90%;
+    max-height: min(420px, 60vh);
+    overflow-y: auto;
+
+
+    // botão "Fechar" + barra de categorias ficam grudados no topo do painel
+    // enquanto o usuário rola a lista de emojis.
+    .emoji-select-topo {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      align-self: stretch;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+
+      background: white;
+      border-radius: var(--card-radius) var(--card-radius) 0 0;
+      padding: var(--space-2-5) 0 var(--space-2);
+    }
+
+    .fechar {
+      height: 35px;
+      padding: var(--space-2-5);
+      font-size: var(--font-md);
+      border-radius: var(--radius-pill);
+      color: black;
+      background: var(--ion-color-danger);
+
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+       transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    // barra arredondada de atalhos: um botão por categoria, que rola o
+    // painel até o bloco correspondente
+    .categorias-nav {
+      display: flex;
+      gap: var(--space-1);
+      max-width: 100%;
+      padding: var(--space-1);
+      overflow-x: auto;
+
+      border-radius: var(--radius-pill);
+      background: #e0e0e0;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+    }
+
+    .categoria-nav-btn {
+      flex-shrink: 0;
+      width: 38px;
+      height: 38px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: var(--font-md);
+      border-radius: 50%;
+      background: transparent;
+
+      transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+
+      &:active {
+        background: white;
+        transform: scale(0.92);
+      }
+
+      // categoria em destaque: a última em que o usuário clicou na barra
+      &.ativa {
+        background: white;
+        box-shadow: 0 0 0 3px var(--ion-color-success);
+      }
+    }
+
+    // cada categoria (título + grade de emojis) fica em seu próprio bloco.
+    // scroll-margin-top deixa um respiro do tamanho do cabeçalho fixo
+    // (.emoji-select-topo) na hora de rolar até aqui, senão o título fica
+    // escondido atrás do "Fechar" + barra de categorias.
+    .categoria-bloco {
+      width: 100%;
+      margin-top: var(--space-2-5);
+      scroll-margin-top: 115px;
+    }
+
+    // título da categoria (ex: "Casa", "Cozinha")
+    .categoria-titulo {
+      font-size: var(--font-lg);
+      text-align: center;
+      font-weight: 600;
+      color: black;
+      margin: var(--space-2) 0;
+    }
+
+    .categoria-emojis {
+      display: flex;
+      gap: var(--space-2-5);
+      justify-content: center;
+      flex-wrap: wrap;
+
+
+      button {
+        width: 50px;
+        height: 50px;
+        padding: var(--space-1);
+        font-size: var(--font-md);
+        border-radius: var(--radius-sm);
+        background: #e0e0e0;
+      }
+    }
+  }
 }
 
+*{
+  transition: all ease-in-out .2s;
+}

@@ -1,0 +1,38 @@
+<div class="relogio">
+  <div class="cabecalho">
+    <button type="button" class="hora-display" [class.ativo]="modo === 'hora'" (click)="selecionarModo('hora')">
+      {{ hora12 }}
+    </button>
+    <span class="dois-pontos">:</span>
+    <button type="button" class="minuto-display" [class.ativo]="modo === 'minuto'" (click)="selecionarModo('minuto')">
+      {{ minutoFormatado }}
+    </button>
+
+    <div class="periodo">
+      <button type="button" [class.ativo]="periodo === 'AM'" (click)="definirPeriodo('AM')">AM</button>
+      <button type="button" [class.ativo]="periodo === 'PM'" (click)="definirPeriodo('PM')">PM</button>
+    </div>
+  </div>
+
+  <div class="mostrador" #mostrador (pointerdown)="iniciarArraste($event)" (pointermove)="moverArraste($event)"
+    (pointerup)="finalizarArraste()" (pointercancel)="finalizarArraste()">
+
+    <div class="centro"></div>
+    <div class="ponteiro" [style.transform]="'rotate(' + anguloPonteiro + 'deg)'"></div>
+
+    <ng-container *ngIf="modo === 'hora'; else minutos">
+      <button type="button" *ngFor="let p of horasPos" class="numero" [class.selecionado]="p.valor === hora12"
+        [style.left.%]="p.x" [style.top.%]="p.y" (click)="selecionarHora(p.valor)">
+        {{ p.rotulo }}
+      </button>
+    </ng-container>
+
+    <ng-template #minutos>
+      <button type="button" *ngFor="let p of minutosPos" class="numero numero-minuto"
+        [class.selecionado]="p.valor === minuto" [style.left.%]="p.x" [style.top.%]="p.y"
+        (click)="selecionarMinuto(p.valor)">
+        {{ p.rotulo }}
+      </button>
+    </ng-template>
+  </div>
+</div>

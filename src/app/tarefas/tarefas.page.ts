@@ -6,7 +6,7 @@ import { Etiqueta, Tarefa } from '../interfaces/tarefas.interfaces';
 import { Router } from '@angular/router';
 import { NotificacoesService } from '../services/notificacoes.services';
 import { AlertController } from '@ionic/angular';
-import { ETIQUETAS } from '../constants/etiqueta.constants';
+import { ETIQUETAS, carregarEtiquetasCustomizadas } from '../constants/etiqueta.constants';
 
 @Component({
   selector: 'app-tarefas',
@@ -18,7 +18,21 @@ import { ETIQUETAS } from '../constants/etiqueta.constants';
 export class TarefasPage {
 
   tarefas: Tarefa[] = [];
-  readonly etiquetas = ETIQUETAS;
+  etiquetas: Etiqueta[] = ETIQUETAS;
+  mostrarDicaArraste = false;
+
+  // 🖐️ Controla o "segurar 0.3s antes de arrastar": o ion-reorder-group só
+  // fica habilitado depois desse tempo, pra não roubar o scroll da lista
+  // num toque rápido.
+  reorderArmado = false;
+  private readonly TEMPO_PRESSAO_MS = 300;
+  private readonly TOLERANCIA_MOVIMENTO_PX = 8;
+  private pressTimer: any = null;
+  private pressAtivo = false;
+  private pressStartX = 0;
+  private pressStartY = 0;
+  private pressEl: HTMLElement | null = null;
+  private pressTouchId: number | null = null;
 
 
   tarefasPadrao: Tarefa[] = [
@@ -35,6 +49,23 @@ export class TarefasPage {
 
   ionViewWillEnter() {
     this.carregarTarefas();
+    this.etiquetas = [...ETIQUETAS, ...carregarEtiquetasCustomizadas()];
+    this.exibirDicaArraste();
+  }
+
+  // Mostra, uma única vez, uma pequena animação no primeiro card para
+  // indicar que as tarefas podem ser arrastadas para reordenar.
+  private exibirDicaArraste() {
+    if (this.tarefas.length < 2) return;
+    if (localStorage.getItem('dica_arraste_vista')) return;
+
+    setTimeout(() => {
+      this.mostrarDicaArraste = true;
+      setTimeout(() => {
+        this.mostrarDicaArraste = false;
+        localStorage.setItem('dica_arraste_vista', '1');
+      }, 1200);
+    }, 500);
   }
 
   carregarTarefas() {
@@ -62,6 +93,104 @@ export class TarefasPage {
     return tarefa.id;
   }
 
+  reordenarTarefas(event: any) {
+    const tarefaMovida = this.tarefas.splice(event.detail.from, 1)[0];
+    this.tarefas.splice(event.detail.to, 0, tarefaMovida);
+
+    event.detail.complete();
+
+    localStorage.setItem('tarefas', JSON.stringify(this.tarefas));
+  }
+
+  // 🖐️ Início do toque/clique no card: começa a contar os 0.3s.
+  // Enquanto isso, o ion-reorder-group continua desabilitado, então um
+  // toque rápido (ex: rolando a lista) não é sequestrado pelo arraste.
+  iniciarPressaoReorder(event: TouchEvent | MouseEvent) {
+    if (this.tarefas.length < 2 || this.pressAtivo) return;
+
+    const ponto = this.pontoDoEvento(event);
+    if (!ponto) return;
+
+    this.pressAtivo = true;
+    this.pressStartX = ponto.x;
+    this.pressStartY = ponto.y;
+    this.pressEl = event.currentTarget as HTMLElement;
+    this.pressTouchId = 'changedTouches' in event ? (event.changedTouches[0]?.identifier ?? null) : null;
+
+    this.pressTimer = setTimeout(() => this.armarArraste(), this.TEMPO_PRESSAO_MS);
+  }
+
+  // Se o dedo se mover antes dos 0.3s, entende-se como um gesto de rolagem
+  // e cancela a contagem — o card não é agarrado.
+  moverPressaoReorder(event: TouchEvent | MouseEvent) {
+    if (!this.pressAtivo || this.reorderArmado) return;
+
+    const ponto = this.pontoDoEvento(event);
+    if (!ponto) return;
+
+    const dx = Math.abs(ponto.x - this.pressStartX);
+    const dy = Math.abs(ponto.y - this.pressStartY);
+
+    if (dx > this.TOLERANCIA_MOVIMENTO_PX || dy > this.TOLERANCIA_MOVIMENTO_PX) {
+      this.cancelarPressaoReorder();
+    }
+  }
+
+  cancelarPressaoReorder() {
+    if (this.pressTimer) {
+      clearTimeout(this.pressTimer);
+      this.pressTimer = null;
+    }
+    this.pressAtivo = false;
+    this.pressEl = null;
+    this.pressTouchId = null;
+  }
+
+  // Os 0.3s se passaram com o dedo parado: habilita o ion-reorder-group e
+  // repassa o toque atual pro Ionic assumir o arraste a partir daqui.
+  private armarArraste() {
+    const el = this.pressEl;
+    const touchId = this.pressTouchId;
+    if (!el) return;
+
+    this.reorderArmado = true;
+
+    requestAnimationFrame(() => {
+      if ('ontouchstart' in window && touchId !== null) {
+        const touch = new Touch({
+          identifier: touchId,
+          target: el,
+          clientX: this.pressStartX,
+          clientY: this.pressStartY
+        });
+        el.dispatchEvent(new TouchEvent('touchstart', {
+          touches: [touch],
+          targetTouches: [touch],
+          changedTouches: [touch],
+          bubbles: true,
+          cancelable: true
+        }));
+      } else {
+        el.dispatchEvent(new MouseEvent('mousedown', {
+          clientX: this.pressStartX,
+          clientY: this.pressStartY,
+          bubbles: true,
+          cancelable: true
+        }));
+      }
+
+      this.cancelarPressaoReorder();
+    });
+  }
+
+  private pontoDoEvento(event: TouchEvent | MouseEvent): { x: number; y: number } | null {
+    if ('changedTouches' in event) {
+      const touch = event.touches[0] ?? event.changedTouches[0];
+      return touch ? { x: touch.clientX, y: touch.clientY } : null;
+    }
+    return { x: event.clientX, y: event.clientY };
+  }
+
   acaoTarefa(tarefa: Tarefa) {
     if (!tarefa.id) {
       console.error('Tarefa sem ID:', tarefa);
@@ -79,8 +208,8 @@ export class TarefasPage {
     this.router.navigate(['/add-tarefa']);
   }
 
-  voltarHome() {
-    this.router.navigate(['/home']);
+  irParaSobre() {
+    this.router.navigate(['/sobre']);
   }
 
   async desfazerTodas() {
@@ -136,22 +265,20 @@ export class TarefasPage {
       0
     );
 
-    // ⏰ se o horário já passou hoje, não mostra texto
-    if (dataLembreteHoje <= agora) {
-      return '';
-    }
+    const jaPassouHoje = dataLembreteHoje <= agora;
 
-    // 🗓️ Apenas um dia
+    // 🗓️ Apenas hoje — é uma disparada única; se o horário já passou não há
+    // próxima ocorrência (NotificacoesService não reagenda pro dia seguinte).
     if (lembrete.tipo === 'umdia') {
-      return `Hoje às ${hora}`;
+      return jaPassouHoje ? '' : `Hoje às ${hora}`;
     }
 
-    // 🔁 Diário
+    // 🔁 Diário — sempre se repete, então o card deve sempre exibir o lembrete.
     if (lembrete.tipo === 'diario') {
-      return `Hoje às ${hora}`;
+      return jaPassouHoje ? `Amanhã às ${hora}` : `Hoje às ${hora}`;
     }
 
-    // 📅 Semanal
+    // 📅 Semanal — o horário de hoje já ter passado não invalida os outros dias.
     if (lembrete.tipo === 'semanal') {
       const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 

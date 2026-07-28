@@ -5,13 +5,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tarefa } from '../interfaces/tarefas.interfaces';
 import { NotificacoesService } from '../services/notificacoes.services';
+import { RelogioHorarioComponent } from '../shared/relogio-horario/relogio-horario.component';
 
 @Component({
   selector: 'app-add-lembrete',
   templateUrl: './add-lembrete.page.html',
   styleUrls: ['./add-lembrete.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, CommonModule, FormsModule, RelogioHorarioComponent]
 })
 export class AddLembretePage implements OnInit {
 
@@ -22,7 +23,8 @@ export class AddLembretePage implements OnInit {
   origem: 'fazer' | 'conferir' = 'fazer';
 
   recorrencia: 'umdia' | 'diario' | 'semanal' = 'diario';
-  horarioISO = '';
+  // Horário no formato "HH:mm" (24h), o mesmo já usado em tarefa.lembrete.hora.
+  horario = this.horaAtualFormatada();
 
   diasSemana = [
     { nome: 'Dom', valor: 0, selecionado: false },
@@ -43,17 +45,12 @@ export class AddLembretePage implements OnInit {
 
   ngOnInit() {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
+    this.origem = (this.route.snapshot.queryParamMap.get('origem') as any) || 'fazer';
 
     if (!this.id) {
       this.router.navigate(['/tarefas']);
       return;
     }
-
-    this.route.queryParams.subscribe(params => {
-      if (params['origem']) {
-        this.origem = params['origem'];
-      }
-    });
 
     const tarefas: Tarefa[] =
       JSON.parse(localStorage.getItem('tarefas') || '[]');
@@ -73,7 +70,7 @@ export class AddLembretePage implements OnInit {
       const lembrete = tarefa.lembrete;
 
       this.recorrencia = lembrete.tipo;
-      this.horarioISO = this.hhmmParaISO(lembrete.hora);
+      this.horario = lembrete.hora;
 
       if (lembrete.tipo === 'semanal') {
         this.diasSemana.forEach(d =>
@@ -83,15 +80,9 @@ export class AddLembretePage implements OnInit {
     }
   }
 
-  private hhmmParaISO(hhmm: string): string {
-    const [h, m] = hhmm.split(':').map(Number);
+  private horaAtualFormatada(): string {
     const d = new Date();
-
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
-  }
-
-  private isoParaHHmm(iso: string): string {
-    return iso.substring(11, 16);
+    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   }
 
   toggleDia(dia: any) {
@@ -99,11 +90,11 @@ export class AddLembretePage implements OnInit {
   }
 
   async salvarLembrete() {
-    if (!this.horarioISO) return;
+    if (!this.horario) return;
 
     const lembrete: any = {
       tipo: this.recorrencia,
-      hora: this.isoParaHHmm(this.horarioISO)
+      hora: this.horario
     };
 
     if (this.recorrencia === 'semanal') {

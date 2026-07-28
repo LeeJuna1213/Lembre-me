@@ -36,5 +36,11 @@ export const routes: Routes = [
   path: 'add-lembrete/:id',
   loadComponent: () => import('./add-lembrete/add-lembrete.page')
   .then(m => m.AddLembretePage)
+},
+
+{
+  path: 'sobre',
+  loadComponent: () => import('./sobre/sobre.page')
+  .then(m => m.SobrePage)
 }
 ];

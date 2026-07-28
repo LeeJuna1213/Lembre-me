@@ -14,27 +14,6 @@ export class NotificacoesService {
     return tarefaId * 10;
   }
 
-  private proximaData(hora: number, minuto: number, weekday?: number): Date {
-    const agora = new Date();
-    const data = new Date();
-
-    data.setHours(hora, minuto, 0, 0);
-
-    // ⏰ Apenas um dia / diário
-    if (weekday === undefined) {
-      if (data <= agora) data.setDate(data.getDate() + 1);
-      return data;
-    }
-
-    // 📅 Semanal
-    const hoje = agora.getDay();
-    let diff = weekday - hoje;
-    if (diff < 0 || (diff === 0 && data <= agora)) diff += 7;
-
-    data.setDate(data.getDate() + diff);
-    return data;
-  }
-
   // 🧹 Cancela notificações de UMA tarefa
   async cancelar(tarefaId: number) {
     const base = this.baseId(tarefaId);
@@ -66,42 +45,50 @@ export class NotificacoesService {
 
     const extra = { tarefaId: tarefa.id };
 
-    // 🗓️ Apenas um dia
+    // 🗓️ Apenas hoje — dispara uma única vez, hoje, no horário escolhido.
+    // Se o horário já passou, não agenda (não deve "vazar" pro dia seguinte).
     if (tarefa.lembrete.tipo === 'umdia') {
-      notificacoes.push({
-        id: base,
-        title: '🗓️ Lembrete',
-        body: tarefa.titulo,
-        smallIcon: 'ic_stat_name',
-        channelId: 'lembretes',
-        extra,
-        schedule: {
-          at: this.proximaData(hora, minuto),
-          allowWhileIdle: true
-        }
-      });
+      const agora = new Date();
+      const disparo = new Date();
+      disparo.setHours(hora, minuto, 0, 0);
+
+      if (disparo > agora) {
+        notificacoes.push({
+          id: base,
+          title: '🗓️ Lembrete',
+          body: tarefa.titulo,
+          smallIcon: 'ic_stat_name',
+          channelId: 'lembretes_v2',
+          sound: 'toque.mp4',
+          extra,
+          schedule: {
+            at: disparo,
+            allowWhileIdle: true,
+            repeats: false
+          }
+        });
+      }
     }
 
-    // 🔁 Diário
+    // 🔁 Diário — usar só "on" (sem "every"): campos não informados (dia/mês)
+    // ciclam sozinhos, então já dispara todo dia nesse horário.
     if (tarefa.lembrete.tipo === 'diario') {
       notificacoes.push({
         id: base,
         title: '⏰ Lembrete Diário',
         body: tarefa.titulo,
         smallIcon: 'ic_stat_name',
-        channelId: 'lembretes',
+        channelId: 'lembretes_v2',
+        sound: 'toque.mp4',
         extra,
         schedule: {
-          // ✅ on + every — sem at, sem ambiguidade
-          every: 'day',
           on: { hour: hora, minute: minuto },
-          allowWhileIdle: true,
-          androidExact: true
+          allowWhileIdle: true
         }
       });
     }
 
-    // 📅 Semanal
+    // 📅 Semanal — mesma lógica: só "on" com weekday fixo já repete toda semana.
     if (tarefa.lembrete.tipo === 'semanal' && tarefa.lembrete.diasSemana?.length) {
       tarefa.lembrete.diasSemana.forEach((dia, i) => {
         notificacoes.push({
@@ -109,13 +96,12 @@ export class NotificacoesService {
           title: '📅 Lembrete Semanal',
           body: `${tarefa.titulo} • ${tarefa.lembrete!.diasSemana!.map(d => this.nomeDia(d)).join(', ')}`,
           smallIcon: 'ic_stat_name',
-          channelId: 'lembretes',
+          channelId: 'lembretes_v2',
+        sound: 'toque.mp4',
           extra,
           schedule: {
-            every: 'week',
             on: { weekday: dia + 1, hour: hora, minute: minuto }, // Capacitor: 1=Dom..7=Sab
-            allowWhileIdle: true,
-            androidExact: true
+            allowWhileIdle: true
           }
         });
       });
@@ -124,5 +110,29 @@ export class NotificacoesService {
     if (notificacoes.length) {
       await LocalNotifications.schedule({ notifications: notificacoes });
     }
+  }
+
+  // 🔁 Avisa que o reset diário liberou de novo uma tarefa que estava feita.
+  // Usa base+8 (fora da faixa base..base+7 que cancelar() apaga), já que essa
+  // notificação é avulsa e não deve ser cancelada junto com o lembrete.
+  async notificarReset(tarefa: Tarefa) {
+    const perm = await LocalNotifications.requestPermissions();
+    if (perm.display !== 'granted') return;
+
+    await LocalNotifications.schedule({
+      notifications: [{
+        id: this.baseId(tarefa.id) + 8,
+        title: '🔁 Reset diário',
+        body: `${tarefa.emoji} ${tarefa.titulo} foi resetada e já pode ser feita de novo!`,
+        smallIcon: 'ic_stat_name',
+        channelId: 'lembretes_v2',
+        sound: 'toque.mp4',
+        extra: { tarefaId: tarefa.id },
+        schedule: {
+          at: new Date(Date.now() + 1000),
+          allowWhileIdle: true
+        }
+      }]
+    });
   }
 }

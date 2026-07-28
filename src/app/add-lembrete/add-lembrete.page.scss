@@ -8,29 +8,29 @@ ion-content{
   .voltar, .desfazer{
     position: absolute;
     background-color: transparent;
-    top: 40px;  
-    font-size: 35px;          
+    top: var(--nav-icon-top);
+    font-size: var(--nav-icon-size);
   }
   .voltar{
-    left: 12px;
+    left: var(--space-3);
   }
   .desfazer{
-    right: 12px; 
+    right: var(--space-3);
   }
 
 
   .header{
-    margin-top: 20px;
+    margin-top: 65px;
     text-align: center;
   }
 
   .emoji {
-    font-size: 70px;
+    font-size: var(--font-header-emoji);
     margin: 0;
   }
 
   .titulo{
-    font-size: 2rem;
+    font-size: var(--font-title);
     color: white;
     text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   }
@@ -38,34 +38,39 @@ ion-content{
   .card-lembrete ion-item {
    --background: transparent;
   }
-  .card-lembrete{
+  .card-lembrete, .card-dias{
     --background: var(--ion-color-primary);
-    border-radius: 16px;
+    border-radius: var(--card-radius);
     text-align: center;
+  }
+  .card-dias{
+    padding-bottom: var(--space-4);
   }
   .select-native {
     background: transparent;
     border: none;
     outline: none;
-    margin-right: 25px;
-  }
-
-  .select-native option {
-    background: white;
-    border-radius: 20px;
-  }
-
-  .card-lembrete ion-datetime{
-    border-radius: 25px;
-    color: black;
+    margin-right: var(--space-6);
+    font-size: var(--font-md);
   }
 
   .repetir{
-      margin-left: 10px;
+      margin-left: var(--space-2-5);
+      font-size: var(--font-md);
   }
 
   .horario{
     text-align: center;
+    color: black;
+    font-size: var(--font-md);
+    margin: var(--space-1) 0 0;
+  }
+
+  // Card do relógio redondo: sem padding extra, quem cuida do espaçamento
+  // interno é o próprio app-relogio-horario.
+  .card-relogio {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-1);
   }
 
   .tituloSemanal{
@@ -79,49 +84,48 @@ ion-content{
     --background: white;
     --color: black;
     transform: scale(1);
-    padding: 30px;
+    padding: var(--space-7);
   }
 
   ion-chip {
     --background: #ebb7eb;
     transition: all .2s ease;
-    padding: 20px;
+    padding: var(--space-5);
   }
 
     .bnt-add-lembrete{
-      border-radius: 12px;
+      border-radius: var(--btn-radius);
     }
 
     .select-recorrencia {
       --background: transparent;
 
-      font-size: 16px;
+      font-size: var(--font-base);
       text-align: center;
     }
 
    .addLembrete{
         width: 100%;
-        height: 58px;
-
+        height: var(--btn-height);
 
         border: none;
-        border-radius: 12px;
+        border-radius: var(--btn-radius);
 
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: var(--space-2);
 
-        font-size: 20px;
+        font-size: var(--btn-font);
         font-weight: 500;
         font-family: Kameron;
 
         background-color: var(--ion-color-success);
         color: var(--ion-color-success-contrast);
 
-
+        box-shadow: var(--btn-shadow);
         transition: transform 0.15s ease, box-shadow 0.15s ease;
-    } 
+    }
 
-  
+
 }
