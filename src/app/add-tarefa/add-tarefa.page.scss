@@ -241,7 +241,19 @@ ion-content {
     margin: auto;
     width: 90%;
     max-height: min(420px, 60vh);
-    overflow-y: auto;
+    
+     overflow-y: auto;
+     overflow-x: hidden;
+
+    // Melhora o scroll em dispositivos móveis
+     -webkit-overflow-scrolling: touch;
+     touch-action: pan-y;
+
+     // Evita que o scroll "puxe" o conteúdo externo
+     overscroll-behavior: contain;
+
+     // Evita pequenos problemas de renderização durante o movimento
+     transform: translateZ(0);
 
 
     // botão "Fechar" + barra de categorias ficam grudados no topo do painel

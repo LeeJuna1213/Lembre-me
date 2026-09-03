@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 })
 export class SobrePage {
 
-  readonly versaoApp = '1.0';
+  readonly versaoApp = '2.0.0';
   readonly ferramentas = ['Ionic', 'Angular', 'Capacitor', 'TypeScript'];
 
   constructor(private router: Router) {}
