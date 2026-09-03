@@ -42,5 +42,9 @@ export const routes: Routes = [
   path: 'sobre',
   loadComponent: () => import('./sobre/sobre.page')
   .then(m => m.SobrePage)
-}
+},
+  {
+    path: 'add-nota',
+    loadComponent: () => import('./add-nota/add-nota.page').then( m => m.AddNotaPage)
+  }
 ];

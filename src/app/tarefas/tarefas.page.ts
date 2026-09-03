@@ -5,7 +5,7 @@ import { IonicModule } from '@ionic/angular';
 import { Etiqueta, Tarefa } from '../interfaces/tarefas.interfaces';
 import { Router } from '@angular/router';
 import { NotificacoesService } from '../services/notificacoes.services';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ActionSheetController } from '@ionic/angular';
 import { ETIQUETAS, carregarEtiquetasCustomizadas } from '../constants/etiqueta.constants';
 
 @Component({
@@ -44,6 +44,7 @@ export class TarefasPage {
   constructor(
     private router: Router,
     private notificacoes: NotificacoesService,
+    private actionSheetCtrl: ActionSheetController,
     private alertCtrl: AlertController,
   ) { }
 
@@ -204,8 +205,36 @@ export class TarefasPage {
   }
 
 
+ async abrirOpcoesNovo() {
+  const actionSheet = await this.actionSheetCtrl.create({
+      header: 'O que você quer criar?',
+      buttons: [
+        {
+          text: 'Adicionar tarefa',
+          icon: 'checkbox-outline',
+          handler: () => this.irParaAddTarefa()
+        },
+        {
+          text: 'Adicionar nota',
+          icon: 'document-text-outline',
+          handler: () => this.irParaAddNota()
+        },
+        {
+          text: 'Cancelar',
+          icon: 'close',
+          role: 'cancel'
+        }
+      ]
+    });
+    await actionSheet.present();
+  }
+
   irParaAddTarefa() {
     this.router.navigate(['/add-tarefa']);
+  }
+
+  irParaAddNota() {
+    this.router.navigate(['/add-nota']);
   }
 
   irParaSobre() {
