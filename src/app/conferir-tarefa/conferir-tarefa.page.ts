@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Tarefa } from '../interfaces/tarefas.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -11,10 +11,9 @@ import { AlertController } from '@ionic/angular';
   templateUrl: './conferir-tarefa.page.html',
   styleUrls: ['./conferir-tarefa.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [IonicModule, FormsModule],
 })
 export class ConferirTarefaPage implements OnInit {
-
   tarefa!: Tarefa;
   mostrarObs = false;
   observacaoTexto: string = '';
@@ -27,8 +26,10 @@ export class ConferirTarefaPage implements OnInit {
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    const tarefas: Tarefa[] = JSON.parse(localStorage.getItem('tarefas') || '[]');
-    const encontrada = tarefas.find(t => t.id === id);
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
+    const encontrada = tarefas.find((t) => t.id === id);
 
     if (!encontrada) {
       this.router.navigate(['/tarefas']);
@@ -45,11 +46,24 @@ export class ConferirTarefaPage implements OnInit {
     if (isNaN(dataFeito.getTime())) return `Feito em ${datetime}`;
 
     const agora = new Date();
-    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
-    const diaFeito = new Date(dataFeito.getFullYear(), dataFeito.getMonth(), dataFeito.getDate());
+    const hoje = new Date(
+      agora.getFullYear(),
+      agora.getMonth(),
+      agora.getDate()
+    );
+    const diaFeito = new Date(
+      dataFeito.getFullYear(),
+      dataFeito.getMonth(),
+      dataFeito.getDate()
+    );
 
-    const diffDias = Math.round((hoje.getTime() - diaFeito.getTime()) / (1000 * 60 * 60 * 24));
-    const hora = dataFeito.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const diffDias = Math.round(
+      (hoje.getTime() - diaFeito.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    const hora = dataFeito.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
     if (diffDias === 0) return `Feito hoje às ${hora}`;
     if (diffDias === 1) return `Feito ontem às ${hora}`;
@@ -75,9 +89,9 @@ export class ConferirTarefaPage implements OnInit {
               this.observacaoTexto = '';
               this.mostrarObs = false;
               this.salvarAtualizacao();
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
       await alert.present();
     } else {
@@ -98,8 +112,12 @@ export class ConferirTarefaPage implements OnInit {
   }
 
   salvarAtualizacao() {
-    const tarefas: Tarefa[] = JSON.parse(localStorage.getItem('tarefas') || '[]');
-    const atualizadas = tarefas.map(t => t.id === this.tarefa.id ? { ...this.tarefa } : t);
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
+    const atualizadas = tarefas.map((t) =>
+      t.id === this.tarefa.id ? { ...this.tarefa } : t
+    );
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
   }
 
@@ -112,18 +130,16 @@ export class ConferirTarefaPage implements OnInit {
       header: '🙀 Reiniciar tarefa?',
       message: 'A tarefa, observação e lembrete serão reiniciados.',
       buttons: [
-        { text: 'Não ❌',
-          role: 'cancel',
-          cssClass: 'btn-cancelar' },
+        { text: 'Não ❌', role: 'cancel', cssClass: 'btn-cancelar' },
         {
           text: 'Sim 🗑️',
           cssClass: 'btn-excluir',
           role: 'destructive',
           handler: () => {
             this.executarReset();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -136,19 +152,22 @@ export class ConferirTarefaPage implements OnInit {
     this.tarefa.fotoReloads = undefined;
     this.tarefa.observacao = undefined;
 
-    const tarefas: Tarefa[] = JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
     localStorage.setItem(
       'tarefas',
-      JSON.stringify(tarefas.map(t => t.id === this.tarefa.id ? { ...this.tarefa } : t))
+      JSON.stringify(
+        tarefas.map((t) => (t.id === this.tarefa.id ? { ...this.tarefa } : t))
+      )
     );
 
     this.router.navigate(['/fazer-tarefa', this.tarefa.id]);
   }
 
   irParaLembrete() {
-    this.router.navigate(
-      ['/add-lembrete', this.tarefa.id],
-      { queryParams: { origem: 'conferir' } }
-    );
+    this.router.navigate(['/add-lembrete', this.tarefa.id], {
+      queryParams: { origem: 'conferir' },
+    });
   }
 }

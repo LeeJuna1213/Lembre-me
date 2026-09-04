@@ -5,21 +5,21 @@ import { IonicModule } from '@ionic/angular';
 import { Etiqueta, Tarefa } from '../interfaces/tarefas.interfaces';
 import { Router } from '@angular/router';
 import { NotificacoesService } from '../services/notificacoes.services';
-import { AlertController, ActionSheetController } from '@ionic/angular';
-import { ETIQUETAS, carregarEtiquetasCustomizadas } from '../constants/etiqueta.constants';
+import { AlertController} from '@ionic/angular';
+import { ETIQUETAS, carregarEtiquetasCustomizadas} from '../constants/etiqueta.constants';
 
 @Component({
   selector: 'app-tarefas',
   templateUrl: './tarefas.page.html',
   styleUrls: ['./tarefas.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule]
+  imports: [CommonModule, FormsModule, IonicModule],
 })
 export class TarefasPage {
-
   tarefas: Tarefa[] = [];
   etiquetas: Etiqueta[] = ETIQUETAS;
   mostrarDicaArraste = false;
+  mostrarOpcoesNovo = false;
 
   // 🖐️ Controla o "segurar 0.3s antes de arrastar": o ion-reorder-group só
   // fica habilitado depois desse tempo, pra não roubar o scroll da lista
@@ -34,19 +34,17 @@ export class TarefasPage {
   private pressEl: HTMLElement | null = null;
   private pressTouchId: number | null = null;
 
-
   tarefasPadrao: Tarefa[] = [
     { id: 1, titulo: 'Apagar as luzes', emoji: '💡', feito: false },
     { id: 2, titulo: 'Trancar a porta', emoji: '🚪', feito: false },
-    { id: 3, titulo: 'Desligar o gás', emoji: '🎛️', feito: false }
+    { id: 3, titulo: 'Desligar o gás', emoji: '🎛️', feito: false },
   ];
 
   constructor(
     private router: Router,
     private notificacoes: NotificacoesService,
-    private actionSheetCtrl: ActionSheetController,
-    private alertCtrl: AlertController,
-  ) { }
+    private alertCtrl: AlertController
+  ) {}
 
   ionViewWillEnter() {
     this.carregarTarefas();
@@ -116,9 +114,15 @@ export class TarefasPage {
     this.pressStartX = ponto.x;
     this.pressStartY = ponto.y;
     this.pressEl = event.currentTarget as HTMLElement;
-    this.pressTouchId = 'changedTouches' in event ? (event.changedTouches[0]?.identifier ?? null) : null;
+    this.pressTouchId =
+      'changedTouches' in event
+        ? event.changedTouches[0]?.identifier ?? null
+        : null;
 
-    this.pressTimer = setTimeout(() => this.armarArraste(), this.TEMPO_PRESSAO_MS);
+    this.pressTimer = setTimeout(
+      () => this.armarArraste(),
+      this.TEMPO_PRESSAO_MS
+    );
   }
 
   // Se o dedo se mover antes dos 0.3s, entende-se como um gesto de rolagem
@@ -132,7 +136,10 @@ export class TarefasPage {
     const dx = Math.abs(ponto.x - this.pressStartX);
     const dy = Math.abs(ponto.y - this.pressStartY);
 
-    if (dx > this.TOLERANCIA_MOVIMENTO_PX || dy > this.TOLERANCIA_MOVIMENTO_PX) {
+    if (
+      dx > this.TOLERANCIA_MOVIMENTO_PX ||
+      dy > this.TOLERANCIA_MOVIMENTO_PX
+    ) {
       this.cancelarPressaoReorder();
     }
   }
@@ -162,29 +169,35 @@ export class TarefasPage {
           identifier: touchId,
           target: el,
           clientX: this.pressStartX,
-          clientY: this.pressStartY
-        });
-        el.dispatchEvent(new TouchEvent('touchstart', {
-          touches: [touch],
-          targetTouches: [touch],
-          changedTouches: [touch],
-          bubbles: true,
-          cancelable: true
-        }));
-      } else {
-        el.dispatchEvent(new MouseEvent('mousedown', {
-          clientX: this.pressStartX,
           clientY: this.pressStartY,
-          bubbles: true,
-          cancelable: true
-        }));
+        });
+        el.dispatchEvent(
+          new TouchEvent('touchstart', {
+            touches: [touch],
+            targetTouches: [touch],
+            changedTouches: [touch],
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+      } else {
+        el.dispatchEvent(
+          new MouseEvent('mousedown', {
+            clientX: this.pressStartX,
+            clientY: this.pressStartY,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
       }
 
       this.cancelarPressaoReorder();
     });
   }
 
-  private pontoDoEvento(event: TouchEvent | MouseEvent): { x: number; y: number } | null {
+  private pontoDoEvento(
+    event: TouchEvent | MouseEvent
+  ): { x: number; y: number } | null {
     if ('changedTouches' in event) {
       const touch = event.touches[0] ?? event.changedTouches[0];
       return touch ? { x: touch.clientX, y: touch.clientY } : null;
@@ -204,38 +217,24 @@ export class TarefasPage {
     }
   }
 
+  abrirOpcoesNovo() {
+      this.mostrarOpcoesNovo = true;
+    }
 
- async abrirOpcoesNovo() {
-  const actionSheet = await this.actionSheetCtrl.create({
-      header: 'O que você quer criar?',
-      buttons: [
-        {
-          text: 'Adicionar tarefa',
-          icon: 'checkbox-outline',
-          handler: () => this.irParaAddTarefa()
-        },
-        {
-          text: 'Adicionar nota',
-          icon: 'document-text-outline',
-          handler: () => this.irParaAddNota()
-        },
-        {
-          text: 'Cancelar',
-          icon: 'close',
-          role: 'cancel'
-        }
-      ]
-    });
-    await actionSheet.present();
-  }
+    fecharOpcoesNovo() {
+      this.mostrarOpcoesNovo = false;
+    }
 
-  irParaAddTarefa() {
-    this.router.navigate(['/add-tarefa']);
-  }
+    irParaAddTarefa() {
+      this.mostrarOpcoesNovo = false;
+      this.router.navigate(['/add-tarefa']);
+    }
 
-  irParaAddNota() {
-    this.router.navigate(['/add-nota']);
-  }
+    irParaAddNota() {
+      this.mostrarOpcoesNovo = false;
+      this.router.navigate(['/add-nota']);
+    }
+
 
   irParaSobre() {
     this.router.navigate(['/sobre']);
@@ -249,7 +248,7 @@ export class TarefasPage {
         {
           text: 'Não ❌',
           role: 'cancel',
-          cssClass: 'btn-cancelar'
+          cssClass: 'btn-cancelar',
         },
         {
           text: 'Sim 🗑️',
@@ -258,19 +257,19 @@ export class TarefasPage {
           handler: async () => {
             await this.notificacoes.cancelarTodas();
 
-            this.tarefas = this.tarefas.map(tarefa => ({
+            this.tarefas = this.tarefas.map((tarefa) => ({
               ...tarefa,
               feito: false,
               lembrete: undefined,
               datetime: undefined,
               foto: undefined,
-              fotoReloads: undefined
+              fotoReloads: undefined,
             }));
 
             this.salvarTarefas();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -312,7 +311,7 @@ export class TarefasPage {
       const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
       const dias = (lembrete.diasSemana || [])
-        .map(d => nomesDias[d])
+        .map((d) => nomesDias[d])
         .join(', ');
 
       return `Semanal: ${dias} às ${hora}`;
@@ -328,12 +327,25 @@ export class TarefasPage {
     if (isNaN(dataFeito.getTime())) return `Feito em ${datetime}`;
 
     const agora = new Date();
-    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
-    const diaFeito = new Date(dataFeito.getFullYear(), dataFeito.getMonth(), dataFeito.getDate());
+    const hoje = new Date(
+      agora.getFullYear(),
+      agora.getMonth(),
+      agora.getDate()
+    );
+    const diaFeito = new Date(
+      dataFeito.getFullYear(),
+      dataFeito.getMonth(),
+      dataFeito.getDate()
+    );
 
-    const diffDias = Math.round((hoje.getTime() - diaFeito.getTime()) / (1000 * 60 * 60 * 24));
+    const diffDias = Math.round(
+      (hoje.getTime() - diaFeito.getTime()) / (1000 * 60 * 60 * 24)
+    );
 
-    const hora = dataFeito.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const hora = dataFeito.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
     if (diffDias === 0) return `Feito hoje às ${hora}`;
     if (diffDias === 1) return `Feito ontem`;
@@ -343,9 +355,8 @@ export class TarefasPage {
     return `Feito em ${dataFeito.toLocaleDateString('pt-BR')}`; // dd/mm/aaaa
   }
 
-
   getEtiquetas(tarefa: Tarefa): Etiqueta[] {
     if (!tarefa.etiquetas?.length) return [];
-    return this.etiquetas.filter(e => tarefa.etiquetas!.includes(e.id));
+    return this.etiquetas.filter((e) => tarefa.etiquetas!.includes(e.id));
   }
 }

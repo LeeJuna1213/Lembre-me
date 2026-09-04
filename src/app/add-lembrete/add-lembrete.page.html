@@ -1,10 +1,6 @@
 <ion-content [fullscreen]="true">
-  <button class="voltar" (click)="voltar()">
-      ↩️
-  </button>
-   <button type="button" class="desfazer" (click)="desfazerUma()">
-    🚮
-  </button>
+  <button class="voltar" (click)="voltar()">↩️</button>
+  <button type="button" class="desfazer" (click)="desfazerUma()">🚮</button>
   <div class="header">
     <p class="emoji">🔔</p>
     <p class="titulo">Lembrete</p>
@@ -18,10 +14,13 @@
           class="select-native"
           interface="popover"
           [interfaceOptions]="{ cssClass: 'recorrencia-popover' }"
-          [(ngModel)]="recorrencia">
+          [(ngModel)]="recorrencia"
+        >
           <ion-select-option value="umdia">🗓️ Apenas hoje</ion-select-option>
           <ion-select-option value="diario">🗓️ Todo dia</ion-select-option>
-          <ion-select-option value="semanal">🗓️ Durante a semana</ion-select-option>
+          <ion-select-option value="semanal"
+            >🗓️ Durante a semana</ion-select-option
+          >
         </ion-select>
       </div>
     </ion-item>
@@ -29,26 +28,25 @@
 
   <ion-card class="card-lembrete card-relogio">
     <p class="horario">⏱️ Horário</p>
-    <app-relogio-horario [valor]="horario" (valorChange)="horario = $event"></app-relogio-horario>
+    <app-relogio-horario
+      [valor]="horario"
+      (valorChange)="horario = $event"
+    ></app-relogio-horario>
   </ion-card>
-  <ion-card class="card-dias" *ngIf="recorrencia === 'semanal'">
-
-  <h2 class="tituloSemanal">Dias da semana</h2>
-
-  <ion-chip
-    *ngFor="let dia of diasSemana"
-    (click)="toggleDia(dia)"
-    [class.selecionado]="dia.selecionado">
-
-    {{ dia.nome }}
-  </ion-chip>
-
-</ion-card>
+  @if (recorrencia === 'semanal') {
+  <ion-card class="card-dias">
+    <h2 class="tituloSemanal">Dias da semana</h2>
+    @for (dia of diasSemana; track dia) {
+    <ion-chip (click)="toggleDia(dia)" [class.selecionado]="dia.selecionado">
+      {{ dia.nome }}
+    </ion-chip>
+    }
+  </ion-card>
+  }
   <ion-card class="bnt-add-lembrete">
-    <button class="addLembrete" 
-    (click)="salvarLembrete()">
-      OK!👍
-    </button>
+    <button class="addLembrete" (click)="salvarLembrete()">OK!👍</button>
   </ion-card>
-  <br> <br> <br>
+  <br />
+  <br />
+  <br />
 </ion-content>

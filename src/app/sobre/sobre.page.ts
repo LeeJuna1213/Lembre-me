@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 
@@ -8,10 +8,9 @@ import { Router } from '@angular/router';
   templateUrl: './sobre.page.html',
   styleUrls: ['./sobre.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule]
+  imports: [IonicModule],
 })
 export class SobrePage {
-
   readonly versaoApp = '2.0.0';
   readonly ferramentas = ['Ionic', 'Angular', 'Capacitor', 'TypeScript'];
 

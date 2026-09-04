@@ -3,48 +3,50 @@
 
   <div class="header">
     <div class="emoji2">
-      <img src="assets/emoji2.png" alt="emoji de olhos">
+      <img src="assets/emoji2.png" alt="emoji de olhos" />
       <p>Conferir</p>
     </div>
   </div>
 
   <ion-card class="card-foto">
     <!-- ✅ método no lugar do pipe date -->
-    <p class="datahora" *ngIf="tarefa.feito">
-      ✅ {{ formatarDataFeito(tarefa.datetime) }}
-    </p>
-
-    <div class="preview-container" *ngIf="tarefa.foto; else semFoto">
+    @if (tarefa.feito) {
+    <p class="datahora">✅ {{ formatarDataFeito(tarefa.datetime) }}</p>
+    } @if (tarefa.foto) {
+    <div class="preview-container">
       <img [src]="tarefa.foto" alt="Foto de comprovação" class="preview-foto" />
     </div>
-
-    <ng-template #semFoto>
-      <div class="semfoto">
-        <p class="semfotoText">😟 <br> Nenhuma foto foi enviada!</p>
-      </div>
-    </ng-template>
-
-    <div class="observacao-container" *ngIf="tarefa.observacao">
+    } @else {
+    <div class="semfoto">
+      <p class="semfotoText">
+        😟 <br />
+        Nenhuma foto foi enviada!
+      </p>
+    </div>
+    } @if (tarefa.observacao) {
+    <div class="observacao-container">
       <p class="observacao-texto">📝 {{ tarefa.observacao }}</p>
     </div>
-
-    <div class="campo-observacao" *ngIf="mostrarObs">
+    } @if (mostrarObs) {
+    <div class="campo-observacao">
       <div class="textarea-wrapper">
-         <textarea
+        <textarea
           class="textarea-obs"
           [(ngModel)]="observacaoTexto"
           placeholder="Escreva uma observação sobre a tarefa..."
-          maxlength="150">
+          maxlength="150"
+        >
         </textarea>
-        <p class="contador">
-          {{ observacaoTexto.length }}/150
-        </p>  
+        <p class="contador">{{ observacaoTexto.length }}/150</p>
       </div>
       <div class="bnts-obs">
-        <button class="cancelar" (click)="fecharObservacao()">❌ Excluir</button>
+        <button class="cancelar" (click)="fecharObservacao()">
+          ❌ Excluir
+        </button>
         <button class="salvar" (click)="salvarObservacao()">💾 Salvar</button>
       </div>
     </div>
+    }
   </ion-card>
 
   <ion-card class="confirmar">
@@ -52,12 +54,15 @@
   </ion-card>
 
   <ion-card class="resetar">
-    <button class="btn-resetar" (click)="reiniciarTarefa()">🔄 Resetar tarefa</button>
+    <button class="btn-resetar" (click)="reiniciarTarefa()">
+      🔄 Resetar tarefa
+    </button>
   </ion-card>
 
   <ion-card class="observacao">
     <button class="bnt-observacao" (click)="observacao()">
-      {{ tarefa.observacao ? '🗑️ Excluir observação' : '📝 Adicionar observação' }}
+      {{ tarefa.observacao ? '🗑️ Excluir observação' : '📝 Adicionar observação'
+      }}
     </button>
   </ion-card>
 
@@ -66,5 +71,7 @@
       ⏱️ {{ tarefa.lembrete ? 'Editar lembrete' : 'Criar lembrete' }}
     </button>
   </ion-card>
-  <br> <br> <br>
+  <br />
+  <br />
+  <br />
 </ion-content>

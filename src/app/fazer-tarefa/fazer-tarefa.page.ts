@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { IonicModule, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -12,10 +12,9 @@ import { NotificacoesService } from '../services/notificacoes.services';
   templateUrl: './fazer-tarefa.page.html',
   styleUrls: ['./fazer-tarefa.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule]
+  imports: [IonicModule],
 })
 export class FazerTarefaPage implements OnInit {
-
   tarefa!: Tarefa;
 
   // 🔁 Reset diário
@@ -27,22 +26,22 @@ export class FazerTarefaPage implements OnInit {
     private router: Router,
     private notificacoes: NotificacoesService,
     private alertCtrl: AlertController
-  ) { }
+  ) {}
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     // 🔁 Carrega estado do reset diário
-    this.resetDiarioAtivo =
-      localStorage.getItem('resetDiarioAtivo') === 'true';
+    this.resetDiarioAtivo = localStorage.getItem('resetDiarioAtivo') === 'true';
 
     this.verificarResetDiario();
     this.agendarResetDiario();
 
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
 
-    const encontrada = tarefas.find(t => t.id === id);
+    const encontrada = tarefas.find((t) => t.id === id);
 
     if (!encontrada) {
       this.router.navigate(['/tarefas']);
@@ -71,7 +70,7 @@ export class FazerTarefaPage implements OnInit {
         quality: 60,
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Camera
+        source: CameraSource.Camera,
       });
 
       if (!imagem?.dataUrl) return;
@@ -80,7 +79,6 @@ export class FazerTarefaPage implements OnInit {
       this.tarefa.foto = imagemReduzida;
       this.tarefa.fotoReloads = 0;
       this.salvarAtualizacao();
-
     } catch (erro: any) {
       if (!erro?.message?.includes('User cancelled')) {
         console.error('Erro ao tirar foto:', erro);
@@ -89,7 +87,7 @@ export class FazerTarefaPage implements OnInit {
   }
 
   private redimensionarImagem(base64: string): Promise<string> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const img = new Image();
       img.src = base64;
       img.onload = () => {
@@ -117,10 +115,11 @@ export class FazerTarefaPage implements OnInit {
   salvarAtualizacao() {
     if (!this.tarefa?.id) return;
 
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
 
-    const atualizadas = tarefas.map(t =>
+    const atualizadas = tarefas.map((t) =>
       t.id === this.tarefa.id ? { ...this.tarefa } : t
     );
 
@@ -141,18 +140,17 @@ export class FazerTarefaPage implements OnInit {
           handler: async () => {
             await this.notificacoes.cancelar(this.tarefa.id);
 
-            const tarefas: Tarefa[] =
-              JSON.parse(localStorage.getItem('tarefas') || '[]');
-
-            const atualizadas = tarefas.filter(
-              t => t.id !== this.tarefa.id
+            const tarefas: Tarefa[] = JSON.parse(
+              localStorage.getItem('tarefas') || '[]'
             );
+
+            const atualizadas = tarefas.filter((t) => t.id !== this.tarefa.id);
 
             localStorage.setItem('tarefas', JSON.stringify(atualizadas));
             this.router.navigate(['/tarefas']);
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();
@@ -173,18 +171,19 @@ export class FazerTarefaPage implements OnInit {
   }
 
   async resetarTarefasFeitas() {
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
 
     // 🔔 Só avisa as que realmente estavam feitas — são essas que "voltam"
     // a ficar disponíveis pro usuário fazer de novo.
-    const tarefasResetadas = tarefas.filter(t => t.feito);
+    const tarefasResetadas = tarefas.filter((t) => t.feito);
 
-    const atualizadas = tarefas.map(t => ({
+    const atualizadas = tarefas.map((t) => ({
       ...t,
-      observacao:"",
+      observacao: '',
       feito: false,
-      datetime: undefined
+      datetime: undefined,
     }));
 
     localStorage.setItem('tarefas', JSON.stringify(atualizadas));
@@ -207,20 +206,14 @@ export class FazerTarefaPage implements OnInit {
 
     this.timeoutReset = setTimeout(() => {
       this.resetarTarefasFeitas();
-      localStorage.setItem(
-        'ultimoResetDiario',
-        new Date().toDateString()
-      );
+      localStorage.setItem('ultimoResetDiario', new Date().toDateString());
       this.agendarResetDiario();
     }, tempo);
   }
 
   toggleResetDiario() {
     this.resetDiarioAtivo = !this.resetDiarioAtivo;
-    localStorage.setItem(
-      'resetDiarioAtivo',
-      String(this.resetDiarioAtivo)
-    );
+    localStorage.setItem('resetDiarioAtivo', String(this.resetDiarioAtivo));
 
     if (this.resetDiarioAtivo) {
       this.agendarResetDiario();
@@ -235,9 +228,8 @@ export class FazerTarefaPage implements OnInit {
   }
 
   irParaLembrete() {
-    this.router.navigate(
-      ['/add-lembrete', this.tarefa.id],
-      { queryParams: { origem: 'fazer' } }
-    );
+    this.router.navigate(['/add-lembrete', this.tarefa.id], {
+      queryParams: { origem: 'fazer' },
+    });
   }
 }

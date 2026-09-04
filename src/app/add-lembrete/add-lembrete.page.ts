@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IonicModule, AlertController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Tarefa } from '../interfaces/tarefas.interfaces';
 import { NotificacoesService } from '../services/notificacoes.services';
@@ -12,10 +12,9 @@ import { RelogioHorarioComponent } from '../shared/relogio-horario/relogio-horar
   templateUrl: './add-lembrete.page.html',
   styleUrls: ['./add-lembrete.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule, RelogioHorarioComponent]
+  imports: [IonicModule, FormsModule, RelogioHorarioComponent],
 })
 export class AddLembretePage implements OnInit {
-
   id!: number;
   tarefa!: Tarefa;
   tituloTarefa = '';
@@ -33,7 +32,7 @@ export class AddLembretePage implements OnInit {
     { nome: 'Qua', valor: 3, selecionado: false },
     { nome: 'Qui', valor: 4, selecionado: false },
     { nome: 'Sex', valor: 5, selecionado: false },
-    { nome: 'Sab', valor: 6, selecionado: false }
+    { nome: 'Sab', valor: 6, selecionado: false },
   ];
 
   constructor(
@@ -45,17 +44,19 @@ export class AddLembretePage implements OnInit {
 
   ngOnInit() {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
-    this.origem = (this.route.snapshot.queryParamMap.get('origem') as any) || 'fazer';
+    this.origem =
+      (this.route.snapshot.queryParamMap.get('origem') as any) || 'fazer';
 
     if (!this.id) {
       this.router.navigate(['/tarefas']);
       return;
     }
 
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
 
-    const tarefa = tarefas.find(t => t.id === this.id);
+    const tarefa = tarefas.find((t) => t.id === this.id);
 
     if (!tarefa) {
       this.router.navigate(['/tarefas']);
@@ -73,8 +74,9 @@ export class AddLembretePage implements OnInit {
       this.horario = lembrete.hora;
 
       if (lembrete.tipo === 'semanal') {
-        this.diasSemana.forEach(d =>
-          d.selecionado = lembrete.diasSemana?.includes(d.valor) ?? false
+        this.diasSemana.forEach(
+          (d) =>
+            (d.selecionado = lembrete.diasSemana?.includes(d.valor) ?? false)
         );
       }
     }
@@ -82,7 +84,9 @@ export class AddLembretePage implements OnInit {
 
   private horaAtualFormatada(): string {
     const d = new Date();
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+    return `${String(d.getHours()).padStart(2, '0')}:${String(
+      d.getMinutes()
+    ).padStart(2, '0')}`;
   }
 
   toggleDia(dia: any) {
@@ -94,19 +98,20 @@ export class AddLembretePage implements OnInit {
 
     const lembrete: any = {
       tipo: this.recorrencia,
-      hora: this.horario
+      hora: this.horario,
     };
 
     if (this.recorrencia === 'semanal') {
       lembrete.diasSemana = this.diasSemana
-        .filter(d => d.selecionado)
-        .map(d => d.valor);
+        .filter((d) => d.selecionado)
+        .map((d) => d.valor);
     }
 
-    const tarefas: Tarefa[] =
-      JSON.parse(localStorage.getItem('tarefas') || '[]');
+    const tarefas: Tarefa[] = JSON.parse(
+      localStorage.getItem('tarefas') || '[]'
+    );
 
-    const index = tarefas.findIndex(t => t.id === this.id);
+    const index = tarefas.findIndex((t) => t.id === this.id);
     if (index === -1) return;
 
     tarefas[index].lembrete = lembrete;
@@ -123,10 +128,7 @@ export class AddLembretePage implements OnInit {
       header: '🙀 Remover lembrete',
       message: `Deseja apagar o lembrete da tarefa "${this.tituloTarefa}"?`,
       buttons: [
-        { text: 'Não ❌',
-          role: 'cancel',
-          cssClass: 'btn-cancelar'
-        },
+        { text: 'Não ❌', role: 'cancel', cssClass: 'btn-cancelar' },
         {
           text: 'Sim 🗑️',
           cssClass: 'btn-excluir',
@@ -134,19 +136,20 @@ export class AddLembretePage implements OnInit {
           handler: async () => {
             await this.notificacoes.cancelar(this.id);
 
-            const tarefas: Tarefa[] =
-              JSON.parse(localStorage.getItem('tarefas') || '[]');
+            const tarefas: Tarefa[] = JSON.parse(
+              localStorage.getItem('tarefas') || '[]'
+            );
 
-            const index = tarefas.findIndex(t => t.id === this.id);
+            const index = tarefas.findIndex((t) => t.id === this.id);
             if (index === -1) return;
 
             delete tarefas[index].lembrete;
             localStorage.setItem('tarefas', JSON.stringify(tarefas));
 
             this.voltar();
-          }
-        }
-      ]
+          },
+        },
+      ],
     });
 
     await alert.present();

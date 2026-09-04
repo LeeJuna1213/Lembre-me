@@ -10,34 +10,22 @@
       "@interfaces/*": ["src/app/interfaces/*"]
     },
     "outDir": "./dist/out-tsc",
-
     "forceConsistentCasingInFileNames": true,
-
-    /* Interop / módulos */
-    "moduleResolution": "node10",
+    "moduleResolution": "bundler",
     "module": "es2022",
     "target": "es2022",
     "esModuleInterop": true,
     "importHelpers": true,
-
-    /* Qualidade e segurança */
     "strict": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-
-    /* Angular / TS */
     "experimentalDecorators": true,
     "useDefineForClassFields": false,
-
-    /* Debug / build */
     "sourceMap": true,
     "declaration": false,
-    "skipLibCheck": true,
-
-    /* Ambiente */
-    "lib": ["es2018", "dom"]
+    "skipLibCheck": true
   },
 
   "angularCompilerOptions": {

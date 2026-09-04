@@ -8,7 +8,13 @@
 
   <ion-card class="addcard">
     <p class="titulo-input">Inserir Tarefa:</p>
-    <input class="input-normal" type="text" placeholder="Ex: Lavar Roupa" maxlength="30" [(ngModel)]="titulo" />
+    <input
+      class="input-normal"
+      type="text"
+      placeholder="Ex: Lavar Roupa"
+      maxlength="30"
+      [(ngModel)]="titulo"
+    />
 
     <p class="titulo-input">Emoji:</p>
     <ion-card class="escolher-emoji">
@@ -17,105 +23,183 @@
       </button>
     </ion-card>
     <div class="emoji-input">
-      <input class="input-normal" type="text" placeholder="🧺" [(ngModel)]="emoji" readonly>
+      <input
+        class="input-normal"
+        type="text"
+        placeholder="🧺"
+        [(ngModel)]="emoji"
+        readonly
+      />
     </div>
     @if(mostrarEmojis){
-      <ion-card class="emoji-select">
-        <div class="emoji-select-topo">
-          <button class="fechar" (click)="fecharEmojis()">↩️ Fechar</button>
-          <div class="categorias-nav">
-            <button type="button" *ngFor="let cat of categorias" class="categoria-nav-btn"
-              [class.ativa]="cat === categoriaAtivaTarefa" [title]="cat" (click)="irParaCategoria(cat)">
-              {{ iconeCategoria(cat) }}
-            </button>
-          </div>
+    <ion-card class="emoji-select">
+      <div class="emoji-select-topo">
+        <button class="fechar" (click)="fecharEmojis()">↩️ Fechar</button>
+        <div class="categorias-nav">
+          @for (cat of categorias; track cat) {
+          <button
+            type="button"
+            class="categoria-nav-btn"
+            [class.ativa]="cat === categoriaAtivaTarefa"
+            [title]="cat"
+            (click)="irParaCategoria(cat)"
+          >
+            {{ iconeCategoria(cat) }}
+          </button>
+          }
         </div>
-        <div class="categoria-bloco" *ngFor="let cat of categorias" [id]="idCategoria('tarefa', cat)">
-          <p class="categoria-titulo">{{ cat }}</p>
-          <div class="categoria-emojis">
-            <button type="button" *ngFor="let e of emojisDaCategoria(cat)" [title]="e.nome"
-              (click)="selecionarEmoji(e.emoji)">
-              {{ e.emoji }}
-            </button>
-          </div>
+      </div>
+      @for (cat of categorias; track cat) {
+      <div class="categoria-bloco" [id]="idCategoria('tarefa', cat)">
+        <p class="categoria-titulo">{{ cat }}</p>
+        <div class="categoria-emojis">
+          @for (e of emojisDaCategoria(cat); track e) {
+          <button
+            type="button"
+            [title]="e.nome"
+            (click)="selecionarEmoji(e.emoji)"
+          >
+            {{ e.emoji }}
+          </button>
+          }
         </div>
-      </ion-card>}
-    <p class="titulo-input">Etiquetas <span class="opcional">(opcional)</span>:</p>
+      </div>
+      } </ion-card
+    >}
+    <p class="titulo-input">
+      Etiquetas <span class="opcional">(opcional)</span>:
+    </p>
     <div class="etiquetas-grid">
-      <button *ngFor="let e of etiquetas" class="etiqueta-btn" [class.selecionada]="etiquetaSelecionada(e.id)"
-        [style.background-color]="etiquetaSelecionada(e.id) ? e.cor : ''" (click)="toggleEtiqueta(e.id)">
+      @for (e of etiquetas; track e) {
+      <button
+        class="etiqueta-btn"
+        [class.selecionada]="etiquetaSelecionada(e.id)"
+        [style.background-color]="etiquetaSelecionada(e.id) ? e.cor : ''"
+        (click)="toggleEtiqueta(e.id)"
+      >
         {{ e.emoji }} {{ e.texto }}
       </button>
+      }
     </div>
 
     @if(etiquetasCustomizadas.length){
-      <p class="titulo-input categoria-personalizada">Etiquetas personalizadas</p>
-      <div class="etiquetas-grid">
-        <button *ngFor="let e of etiquetasCustomizadas" class="etiqueta-btn"
-          [class.selecionada]="etiquetaSelecionada(e.id)"
-          [style.background-color]="etiquetaSelecionada(e.id) ? e.cor : ''"
-          (pointerdown)="iniciarPressao(e)" (pointerup)="cancelarPressao()" (pointerleave)="cancelarPressao()"
-          (click)="toggleEtiqueta(e.id)">
-          {{ e.emoji }} {{ e.texto }}
-        </button>
-      </div>
+    <p class="titulo-input categoria-personalizada">Etiquetas personalizadas</p>
+    <div class="etiquetas-grid">
+      @for (e of etiquetasCustomizadas; track e) {
+      <button
+        class="etiqueta-btn"
+        [class.selecionada]="etiquetaSelecionada(e.id)"
+        [style.background-color]="etiquetaSelecionada(e.id) ? e.cor : ''"
+        (pointerdown)="iniciarPressao(e)"
+        (pointerup)="cancelarPressao()"
+        (pointerleave)="cancelarPressao()"
+        (click)="toggleEtiqueta(e.id)"
+      >
+        {{ e.emoji }} {{ e.texto }}
+      </button>
+      }
+    </div>
     }
 
-    <button class="nova-etiqueta-btn" (click)="abrirNovaEtiqueta()">➕ Nova etiqueta</button>
+    <button class="nova-etiqueta-btn" (click)="abrirNovaEtiqueta()">
+      ➕ Nova etiqueta
+    </button>
 
     @if(mostrarNovaEtiqueta){
-      <div class="nova-etiqueta">
-        <p class="titulo-input">Etiqueta:</p>
-        <input class="input-normal" type="text" placeholder="Ex: Trabalho" maxlength="20"
-          [(ngModel)]="novaEtiquetaTexto" />
+    <div class="nova-etiqueta">
+      <p class="titulo-input">Etiqueta:</p>
+      <input
+        class="input-normal"
+        type="text"
+        placeholder="Ex: Trabalho"
+        maxlength="20"
+        [(ngModel)]="novaEtiquetaTexto"
+      />
 
-        <p class="titulo-input">Emoji da etiqueta:</p>
-        <ion-card class="escolher-emoji">
-          <button class="btn-escolher-emoji" (click)="abrirEmojisEtiqueta()">
-            😉Escolher emoji👈
-          </button>
-        </ion-card>
-        <div class="emoji-input">
-          <input class="input-normal" type="text" placeholder="🏷️" [(ngModel)]="novaEtiquetaEmoji" readonly>
-        </div>
-        @if(mostrarEmojisEtiqueta){
-          <ion-card class="emoji-select">
-            <div class="emoji-select-topo">
-              <button class="fechar" (click)="fecharEmojisEtiqueta()">↩️Fechar</button>
-              <div class="categorias-nav">
-                <button type="button" *ngFor="let cat of categorias" class="categoria-nav-btn"
-                  [class.ativa]="cat === categoriaAtivaEtiqueta" [title]="cat" (click)="irParaCategoriaEtiqueta(cat)">
-                  {{ iconeCategoria(cat) }}
-                </button>
-              </div>
-            </div>
-            <div class="categoria-bloco" *ngFor="let cat of categorias" [id]="idCategoria('etiqueta', cat)">
-              <p class="categoria-titulo">{{ cat }}</p>
-              <div class="categoria-emojis">
-                <button type="button" *ngFor="let e of emojisDaCategoria(cat)" [title]="e.nome"
-                  (click)="selecionarEmojiEtiqueta(e.emoji)">
-                  {{ e.emoji }}
-                </button>
-              </div>
-            </div>
-          </ion-card>
-        }
-         <br>
-        <div class="cores-grid">
-          <button *ngFor="let cor of coresDisponiveis" class="cor-btn" [class.selecionada]="novaEtiquetaCor === cor"
-            [style.background-color]="cor" (click)="selecionarCor(cor)"></button>
-        </div>
-
-        <div class="nova-etiqueta-acoes">
-          <button class="cancelar-etiqueta" (click)="fecharNovaEtiqueta()">❌Cancelar</button>
-          <button class="salvar-etiqueta" (click)="adicionarEtiquetaCustomizada()">💾Salvar</button>
-        </div>
+      <p class="titulo-input">Emoji da etiqueta:</p>
+      <ion-card class="escolher-emoji">
+        <button class="btn-escolher-emoji" (click)="abrirEmojisEtiqueta()">
+          😉Escolher emoji👈
+        </button>
+      </ion-card>
+      <div class="emoji-input">
+        <input
+          class="input-normal"
+          type="text"
+          placeholder="🏷️"
+          [(ngModel)]="novaEtiquetaEmoji"
+          readonly
+        />
       </div>
+      @if(mostrarEmojisEtiqueta){
+      <ion-card class="emoji-select">
+        <div class="emoji-select-topo">
+          <button class="fechar" (click)="fecharEmojisEtiqueta()">
+            ↩️Fechar
+          </button>
+          <div class="categorias-nav">
+            @for (cat of categorias; track cat) {
+            <button
+              type="button"
+              class="categoria-nav-btn"
+              [class.ativa]="cat === categoriaAtivaEtiqueta"
+              [title]="cat"
+              (click)="irParaCategoriaEtiqueta(cat)"
+            >
+              {{ iconeCategoria(cat) }}
+            </button>
+            }
+          </div>
+        </div>
+        @for (cat of categorias; track cat) {
+        <div class="categoria-bloco" [id]="idCategoria('etiqueta', cat)">
+          <p class="categoria-titulo">{{ cat }}</p>
+          <div class="categoria-emojis">
+            @for (e of emojisDaCategoria(cat); track e) {
+            <button
+              type="button"
+              [title]="e.nome"
+              (click)="selecionarEmojiEtiqueta(e.emoji)"
+            >
+              {{ e.emoji }}
+            </button>
+            }
+          </div>
+        </div>
+        }
+      </ion-card>
+      }
+      <br />
+      <div class="cores-grid">
+        @for (cor of coresDisponiveis; track cor) {
+        <button
+          class="cor-btn"
+          [class.selecionada]="novaEtiquetaCor === cor"
+          [style.background-color]="cor"
+          (click)="selecionarCor(cor)"
+        ></button>
+        }
+      </div>
+
+      <div class="nova-etiqueta-acoes">
+        <button class="cancelar-etiqueta" (click)="fecharNovaEtiqueta()">
+          ❌Cancelar
+        </button>
+        <button
+          class="salvar-etiqueta"
+          (click)="adicionarEtiquetaCustomizada()"
+        >
+          💾Salvar
+        </button>
+      </div>
+    </div>
     }
   </ion-card>
 
   <ion-card class="add">
     <button class="addTarefa" (click)="adicionarTarefa()">OK! 👌</button>
   </ion-card>
-  <br> <br> <br>
+  <br />
+  <br />
+  <br />
 </ion-content>

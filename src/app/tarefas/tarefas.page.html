@@ -1,43 +1,54 @@
 <ion-content [fullscreen]="true">
-  <button class="sobre" (click)="irParaSobre()">
-    ℹ️
-  </button>
-  <button class="desfazer" (click)="desfazerTodas()">
-    🔄
-  </button>
+  <button class="sobre" (click)="irParaSobre()">ℹ️</button>
+  <button class="desfazer" (click)="desfazerTodas()">🔄</button>
   <div class="header">
     <div class="emoji1">
-      <img src="assets/emoji1.png" alt="emoji pensativo">
+      <img src="assets/emoji1.png" alt="emoji pensativo" />
       <p>O que eu preciso fazer?</p>
     </div>
   </div>
   <div class="listaTarefas">
-    <ion-reorder-group [disabled]="!reorderArmado" (ionItemReorder)="reordenarTarefas($event)"
-      (ionReorderEnd)="reorderArmado = false">
-      <ion-card *ngFor="let tarefa of tarefas; let i = index; trackBy: trackById" class="tarefa-card"
-        [class.dica-arraste]="mostrarDicaArraste && i === 0">
-
-        <ion-reorder (touchstart)="iniciarPressaoReorder($event)" (touchmove)="moverPressaoReorder($event)"
-          (touchend)="cancelarPressaoReorder()" (touchcancel)="cancelarPressaoReorder()"
-          (mousedown)="iniciarPressaoReorder($event)" (mousemove)="moverPressaoReorder($event)"
-          (mouseup)="cancelarPressaoReorder()" (mouseleave)="cancelarPressaoReorder()">
+    <ion-reorder-group
+      [disabled]="!reorderArmado"
+      (ionItemReorder)="reordenarTarefas($event)"
+      (ionReorderEnd)="reorderArmado = false"
+    >
+      @for (tarefa of tarefas; track trackById(i, tarefa); let i = $index) {
+      <ion-card
+        class="tarefa-card"
+        [class.dica-arraste]="mostrarDicaArraste && i === 0"
+      >
+        <ion-reorder
+          (touchstart)="iniciarPressaoReorder($event)"
+          (touchmove)="moverPressaoReorder($event)"
+          (touchend)="cancelarPressaoReorder()"
+          (touchcancel)="cancelarPressaoReorder()"
+          (mousedown)="iniciarPressaoReorder($event)"
+          (mousemove)="moverPressaoReorder($event)"
+          (mouseup)="cancelarPressaoReorder()"
+          (mouseleave)="cancelarPressaoReorder()"
+        >
           <ion-item lines="none">
             <ion-avatar slot="start" class="emoji">
               <span>{{ tarefa.emoji }}</span>
             </ion-avatar>
             <ion-label>
               <h2 class="titulo">{{ tarefa.titulo }}</h2>
-              <div class="etiquetas" *ngIf="getEtiquetas(tarefa).length">
-                <span *ngFor="let e of getEtiquetas(tarefa)" class="badge-etiqueta" [style.background-color]="e.cor">
+              @if (getEtiquetas(tarefa).length) {
+              <div class="etiquetas">
+                @for (e of getEtiquetas(tarefa); track e) {
+                <span class="badge-etiqueta" [style.background-color]="e.cor">
                   {{ e.emoji }} {{ e.texto }}
                 </span>
+                }
               </div>
-              <p class="datahora" *ngIf="tarefa.feito">
+              } @if (tarefa.feito) {
+              <p class="datahora">
                 ✅ {{ formatarDataFeito(tarefa.datetime) }}
               </p>
-              <p class="info-lembrete" *ngIf="textoLembrete(tarefa) as texto">
-                ⏰ {{ texto }}
-              </p>
+              } @if (textoLembrete(tarefa); as texto) {
+              <p class="info-lembrete">⏰ {{ texto }}</p>
+              }
             </ion-label>
           </ion-item>
         </ion-reorder>
@@ -47,12 +58,33 @@
           </button>
         </div>
       </ion-card>
+      }
     </ion-reorder-group>
     <ion-card class="add">
-     <button class="addTarefa" (click)="abrirOpcoesNovo()">
-        Novo
-     </button>
+      <button class="addTarefa" (click)="abrirOpcoesNovo()">Novo</button>
     </ion-card>
+
+    <div class="opcoes-novo-backdrop" *ngIf="mostrarOpcoesNovo" (click)="fecharOpcoesNovo()">
+      <div class="opcoes-novo-painel" (click)="$event.stopPropagation()">
+        <h3 class="opcoes-novo-titulo">🤔 O que você quer criar?</h3>
+
+        <button class="opcao-btn" (click)="irParaAddTarefa()">
+          <ion-icon name="checkbox-outline"></ion-icon>
+          ✔️ Adicionar tarefa
+        </button>
+
+        <button class="opcao-btn" (click)="irParaAddNota()">
+          <ion-icon name="document-text-outline"></ion-icon>
+          ✍️ Adicionar nota  
+        </button>
+
+        <button class="opcao-btn cancelar" (click)="fecharOpcoesNovo()">
+           ↩️ Voltar
+        </button>
+      </div>
+    </div>
   </div>
-  <br> <br> <br>
+  <br />
+  <br />
+  <br />
 </ion-content>

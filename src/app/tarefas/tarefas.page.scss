@@ -162,4 +162,91 @@ ion-content{
         font-size: clamp(1.5rem, 7vw, 1.875rem);
       }
    }
+
+   .opcoes-novo-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+
+    display: flex;
+    align-items: flex-end; // estilo "bottom sheet"
+    justify-content: center;
+  }
+
+  .opcoes-novo-painel {
+    width: 100%;
+    max-width: 500px;
+    background: var(--ion-color-primary);
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
+    padding: 30px 10px;
+    padding-bottom: 32px; 
+
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    animation: subir 0.25s ease-out;
+  }
+
+  @keyframes subir {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .opcoes-novo-titulo {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    margin: 0 0 8px 0;
+  }
+
+  ion-icon {
+    position: absolute;   
+    left: 20px;
+    font-size: 1.4rem;
+  }
+
+
+  .opcao-btn {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+   
+    gap: 10px;
+
+    width: 100%;
+    min-height: 60px;
+
+    border: none;
+    border-radius: var(--card-radius);
+    background: var(--ion-color-secondary);
+    color: black;
+    font-size: 1.5rem;
+    font-weight: 500;
+
+
+    &.cancelar {
+      background: transparent;
+      max-width: 70%;
+      min-height: 44px;        // 👈 sobrescreve os 60px herdados = mais fino
+      padding: 8px 24px;
+      margin: 0 auto;
+      border-radius: var(--radius-pill);
+      background-color: var(--ion-color-secondary);
+      color: black;
+      font-size: 1.1rem;
+    }
+  }
+
+
+
 }

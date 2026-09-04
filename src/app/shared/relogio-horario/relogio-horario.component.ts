@@ -1,5 +1,13 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 
 interface PosicaoNumero {
   valor: number;
@@ -18,12 +26,11 @@ interface PosicaoNumero {
 @Component({
   selector: 'app-relogio-horario',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './relogio-horario.component.html',
-  styleUrls: ['./relogio-horario.component.scss']
+  styleUrls: ['./relogio-horario.component.scss'],
 })
 export class RelogioHorarioComponent implements OnChanges {
-
   @Input() valor = '12:00';
   @Output() valorChange = new EventEmitter<string>();
 
@@ -35,10 +42,12 @@ export class RelogioHorarioComponent implements OnChanges {
 
   private arrastando = false;
 
-  readonly horasPos = this.construirPosicoes([12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+  readonly horasPos = this.construirPosicoes([
+    12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+  ]);
   readonly minutosPos = this.construirPosicoes(
     [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55],
-    v => String(v).padStart(2, '0')
+    (v) => String(v).padStart(2, '0')
   );
 
   ngOnChanges(changes: SimpleChanges) {
@@ -146,7 +155,10 @@ export class RelogioHorarioComponent implements OnChanges {
     this.valorChange.emit(`${hh}:${mm}`);
   }
 
-  private construirPosicoes(valores: number[], rotulo: (v: number) => string = v => String(v)): PosicaoNumero[] {
+  private construirPosicoes(
+    valores: number[],
+    rotulo: (v: number) => string = (v) => String(v)
+  ): PosicaoNumero[] {
     const total = valores.length;
     return valores.map((valor, i) => {
       const anguloRad = ((i * 360) / total - 90) * (Math.PI / 180);
@@ -154,7 +166,7 @@ export class RelogioHorarioComponent implements OnChanges {
         valor,
         rotulo: rotulo(valor),
         x: 50 + 38 * Math.cos(anguloRad),
-        y: 50 + 38 * Math.sin(anguloRad)
+        y: 50 + 38 * Math.sin(anguloRad),
       };
     });
   }

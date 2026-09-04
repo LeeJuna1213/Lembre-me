@@ -1,30 +1,26 @@
 <ion-content [fullscreen]="true">
-   <button class="voltar" (click)="voltar()">
-    ↩️
-  </button>
-   <div class="tarefa-info">
+  <button class="voltar" (click)="voltar()">↩️</button>
+  <div class="tarefa-info">
     <div class="emoji">{{ tarefa.emoji }}</div>
     <h2 class="titulo">{{ tarefa.titulo }}</h2>
   </div>
 
   <ion-card class="card-foto">
-    <div class="preview-container" *ngIf="tarefa.foto">
-  <img
-    [src]="tarefa.foto"
-    class="preview-foto"
-  />
-  </div>
-  <button class="bnt-foto" (click)="tirarFoto()">
-    📸 Tirar foto para comprovar
-  </button>
+    @if (tarefa.foto) {
+    <div class="preview-container">
+      <img [src]="tarefa.foto" class="preview-foto" />
+    </div>
+    }
+    <button class="bnt-foto" (click)="tirarFoto()">
+      📸 Tirar foto para comprovar
+    </button>
   </ion-card>
 
   <ion-card class="concluir">
-  <button class="bnt-concluir" 
-  (click)="confirmarTarefa()">
-    ✅ Concluir tarefa
-  </button> 
-  </ion-card> 
+    <button class="bnt-concluir" (click)="confirmarTarefa()">
+      ✅ Concluir tarefa
+    </button>
+  </ion-card>
 
   <ion-card class="lembrete">
     <button class="bnt-lembrete" (click)="irParaLembrete()">
@@ -33,19 +29,15 @@
   </ion-card>
 
   <ion-card class="reset-diario">
-  <button class="bnt-reset-diario" 
-  (click)="toggleResetDiario()">
-   🔃🗓️ {{ resetDiarioAtivo ? 'Desativar reset diário' : 'Ativar reset diário' }}
-  </button> 
-  </ion-card>
-  
-  <ion-card class="excluir">
-    <button
-      class="bnt-excluir"
-      (click)="excluirTarefa()"
-      >
-      🗑️ Excluir tarefa
-      </button>
+    <button class="bnt-reset-diario" (click)="toggleResetDiario()">
+      🔃🗓️ {{ resetDiarioAtivo ? 'Desativar reset diário' : 'Ativar reset
+      diário' }}
+    </button>
   </ion-card>
 
+  <ion-card class="excluir">
+    <button class="bnt-excluir" (click)="excluirTarefa()">
+      🗑️ Excluir tarefa
+    </button>
+  </ion-card>
 </ion-content>
