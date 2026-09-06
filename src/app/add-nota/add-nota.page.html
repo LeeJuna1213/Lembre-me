@@ -1,3 +1,88 @@
 <ion-content [fullscreen]="true">
- <button class="voltar" (click)="voltarTarefas()">↩️</button>
+  <button class="voltar" (click)="voltarTarefas()">↩️</button>
+
+  <div class="header">
+    <p class="emoji">{{ emojiCabecalho }}</p>
+    <p class="titulo">{{ tituloCabecalho }}</p>
+  </div>
+
+  <ion-card class="add-card">
+    <ion-item lines="none" class="titulo-item">
+      <div class="titulo-wrapper">
+        <input
+          [(ngModel)]="titulo"
+          placeholder="Título..."
+          class="titulo-input"
+          [readOnly]="modo === 'ver'"
+          [maxlength]="50"
+        />
+        @if (modo !== 'ver') {
+        <p class="contador">{{ titulo.length }}/50</p>
+        }
+      </div>
+    </ion-item>
+
+    @if (modo !== 'criar' && dataFormatada) {
+    <p class="data-nota">📅 {{ dataFormatada }}</p>
+    }
+
+    <ion-item
+      lines="none"
+      class="texto-item"
+      [class.somente-leitura]="modo === 'ver'"
+    >
+      <quill-editor
+        [(ngModel)]="conteudo"
+        [modules]="quillModules"
+        [readOnly]="modo === 'ver'"
+        (onEditorCreated)="onEditorCreated($event)"
+        (onContentChanged)="onConteudoAlterado($event)"
+        placeholder="Escreva sua nota..."
+        class="editor-nota"
+      >
+      </quill-editor>
+      @if (modo !== 'ver') {
+      <p class="contador contador-conteudo">
+        {{ contadorConteudo }}/{{ limiteCaracteres }}
+      </p>
+      }
+    </ion-item>
+  </ion-card>
+
+  @if (modo === 'ver') {
+  <ion-card class="add">
+    <button class="addTarefa" (click)="editarNota()">✏️ Editar nota</button>
+  </ion-card>
+  <ion-card class="excluir">
+    <button class="bnt-excluir" (click)="excluirNota()">🗑️ Excluir nota</button>
+  </ion-card>
+  } @else {
+  <ion-card class="add">
+    <button class="addTarefa" (click)="salvarNota()">OK! 👌</button>
+  </ion-card>
+  }
+
+  @if (mostrarOpcoesImagem) {
+  <div class="opcoes-novo-backdrop" (click)="fecharOpcoesImagem()">
+    <div class="opcoes-novo-painel" (click)="$event.stopPropagation()">
+      <h3 class="opcoes-novo-titulo">🖼️ Adicionar imagem</h3>
+
+      <button class="opcao-btn" (click)="inserirImagem('camera')">
+        📸 Tirar foto
+      </button>
+
+      <button class="opcao-btn" (click)="inserirImagem('galeria')">
+        🖼️ Escolher da galeria
+      </button>
+
+      <button class="opcao-btn cancelar" (click)="fecharOpcoesImagem()">
+        ↩️ Cancelar
+      </button>
+    </div>
+  </div>
+  }
+
+  <br />
+  <br />
+  <br />
 </ion-content>

@@ -2,11 +2,15 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { Etiqueta, Tarefa } from '../interfaces/tarefas.interfaces';
+import { Etiqueta, Nota, Tarefa } from '../interfaces/tarefas.interfaces';
 import { Router } from '@angular/router';
 import { NotificacoesService } from '../services/notificacoes.services';
 import { AlertController} from '@ionic/angular';
 import { ETIQUETAS, carregarEtiquetasCustomizadas} from '../constants/etiqueta.constants';
+
+type ItemTarefa = { tipo: 'tarefa'; dado: Tarefa };
+type ItemNota = { tipo: 'nota'; dado: Nota };
+type Item = ItemTarefa | ItemNota;
 
 @Component({
   selector: 'app-tarefas',
@@ -17,22 +21,11 @@ import { ETIQUETAS, carregarEtiquetasCustomizadas} from '../constants/etiqueta.c
 })
 export class TarefasPage {
   tarefas: Tarefa[] = [];
+  notas: Nota[] = [];
+  itens: Item[] = [];
   etiquetas: Etiqueta[] = ETIQUETAS;
   mostrarDicaArraste = false;
   mostrarOpcoesNovo = false;
-
-  // 🖐️ Controla o "segurar 0.3s antes de arrastar": o ion-reorder-group só
-  // fica habilitado depois desse tempo, pra não roubar o scroll da lista
-  // num toque rápido.
-  reorderArmado = false;
-  private readonly TEMPO_PRESSAO_MS = 300;
-  private readonly TOLERANCIA_MOVIMENTO_PX = 8;
-  private pressTimer: any = null;
-  private pressAtivo = false;
-  private pressStartX = 0;
-  private pressStartY = 0;
-  private pressEl: HTMLElement | null = null;
-  private pressTouchId: number | null = null;
 
   tarefasPadrao: Tarefa[] = [
     { id: 1, titulo: 'Apagar as luzes', emoji: '💡', feito: false },
@@ -48,14 +41,43 @@ export class TarefasPage {
 
   ionViewWillEnter() {
     this.carregarTarefas();
+    this.carregarNotas();
+    this.montarItens();
     this.etiquetas = [...ETIQUETAS, ...carregarEtiquetasCustomizadas()];
     this.exibirDicaArraste();
   }
 
+  // Junta tarefas e notas numa única lista, respeitando a ordem combinada
+  // já salva (ordemItens) e jogando itens novos (ainda não ordenados) pro final.
+  montarItens() {
+    const ordemSalva: { tipo: 'tarefa' | 'nota'; id: number }[] = JSON.parse(
+      localStorage.getItem('ordemItens') || '[]'
+    );
+
+    const tarefasRestantes = [...this.tarefas];
+    const notasRestantes = [...this.notas];
+    const itens: Item[] = [];
+
+    for (const ref of ordemSalva) {
+      if (ref.tipo === 'tarefa') {
+        const i = tarefasRestantes.findIndex((t) => t.id === ref.id);
+        if (i !== -1) itens.push({ tipo: 'tarefa', dado: tarefasRestantes.splice(i, 1)[0] });
+      } else {
+        const i = notasRestantes.findIndex((n) => n.id === ref.id);
+        if (i !== -1) itens.push({ tipo: 'nota', dado: notasRestantes.splice(i, 1)[0] });
+      }
+    }
+
+    for (const tarefa of tarefasRestantes) itens.push({ tipo: 'tarefa', dado: tarefa });
+    for (const nota of notasRestantes) itens.push({ tipo: 'nota', dado: nota });
+
+    this.itens = itens;
+  }
+
   // Mostra, uma única vez, uma pequena animação no primeiro card para
-  // indicar que as tarefas podem ser arrastadas para reordenar.
+  // indicar que os cards podem ser arrastados para reordenar.
   private exibirDicaArraste() {
-    if (this.tarefas.length < 2) return;
+    if (this.itens.length < 2) return;
     if (localStorage.getItem('dica_arraste_vista')) return;
 
     setTimeout(() => {
@@ -87,122 +109,94 @@ export class TarefasPage {
     localStorage.setItem('tarefas', JSON.stringify(this.tarefas));
   }
 
-  // ✅ trackBy evita re-renderização desnecessária que causava a duplicação visual
-  trackById(index: number, tarefa: Tarefa): number {
-    return tarefa.id;
+  carregarNotas() {
+    this.notas = JSON.parse(localStorage.getItem('notas') || '[]');
   }
 
-  reordenarTarefas(event: any) {
-    const tarefaMovida = this.tarefas.splice(event.detail.from, 1)[0];
-    this.tarefas.splice(event.detail.to, 0, tarefaMovida);
+  abrirNota(nota: Nota) {
+    this.router.navigate(['/add-nota', nota.id]);
+  }
+
+  // Prévia em texto puro do conteúdo HTML da nota, pra mostrar no card.
+  resumoNota(nota: Nota): string {
+    const texto = (nota.conteudo || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    if (!texto) return '';
+    return texto.length > 150 ? `${texto.slice(0, 150)}…` : texto;
+  }
+
+  // Data/hora de criação (ou última edição) da nota, no mesmo padrão de
+  // texto usado em formatarDataFeito() para as tarefas.
+  formatarDataNota(nota: Nota): string {
+    const isoData = nota.atualizadoEm || nota.criadoEm;
+    if (!isoData) return '';
+
+    const data = new Date(isoData);
+    if (isNaN(data.getTime())) return '';
+
+    const agora = new Date();
+    const hoje = new Date(
+      agora.getFullYear(),
+      agora.getMonth(),
+      agora.getDate()
+    );
+    const diaData = new Date(
+      data.getFullYear(),
+      data.getMonth(),
+      data.getDate()
+    );
+
+    const diffDias = Math.round(
+      (hoje.getTime() - diaData.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    const hora = data.toLocaleTimeString('pt-BR', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const prefixo = nota.atualizadoEm ? 'Editada' : 'Escrita';
+
+    if (diffDias === 0) return `${prefixo} hoje às ${hora}`;
+    if (diffDias === 1) return `${prefixo} ontem`;
+    if (diffDias === 2) return `${prefixo} anteontem`;
+    if (diffDias <= 7) return `${prefixo} há ${diffDias} dias`;
+
+    return `${prefixo} em ${data.toLocaleDateString('pt-BR')}`;
+  }
+
+  // ✅ trackBy evita re-renderização desnecessária que causava a duplicação visual
+  trackByItem(index: number, item: Item): string {
+    return `${item.tipo}-${item.dado.id}`;
+  }
+
+  reordenarItens(event: any) {
+    const itemMovido = this.itens.splice(event.detail.from, 1)[0];
+    this.itens.splice(event.detail.to, 0, itemMovido);
 
     event.detail.complete();
 
-    localStorage.setItem('tarefas', JSON.stringify(this.tarefas));
+    this.salvarOrdemItens();
   }
 
-  // 🖐️ Início do toque/clique no card: começa a contar os 0.3s.
-  // Enquanto isso, o ion-reorder-group continua desabilitado, então um
-  // toque rápido (ex: rolando a lista) não é sequestrado pelo arraste.
-  iniciarPressaoReorder(event: TouchEvent | MouseEvent) {
-    if (this.tarefas.length < 2 || this.pressAtivo) return;
+  // Persiste a ordem combinada e mantém tarefas/notas sincronizadas com a
+  // ordem relativa mostrada na tela.
+  private salvarOrdemItens() {
+    const ordem = this.itens.map((item) => ({ tipo: item.tipo, id: item.dado.id }));
+    localStorage.setItem('ordemItens', JSON.stringify(ordem));
 
-    const ponto = this.pontoDoEvento(event);
-    if (!ponto) return;
+    this.tarefas = this.itens
+      .filter((item): item is ItemTarefa => item.tipo === 'tarefa')
+      .map((item) => item.dado);
+    this.notas = this.itens
+      .filter((item): item is ItemNota => item.tipo === 'nota')
+      .map((item) => item.dado);
 
-    this.pressAtivo = true;
-    this.pressStartX = ponto.x;
-    this.pressStartY = ponto.y;
-    this.pressEl = event.currentTarget as HTMLElement;
-    this.pressTouchId =
-      'changedTouches' in event
-        ? event.changedTouches[0]?.identifier ?? null
-        : null;
-
-    this.pressTimer = setTimeout(
-      () => this.armarArraste(),
-      this.TEMPO_PRESSAO_MS
-    );
-  }
-
-  // Se o dedo se mover antes dos 0.3s, entende-se como um gesto de rolagem
-  // e cancela a contagem — o card não é agarrado.
-  moverPressaoReorder(event: TouchEvent | MouseEvent) {
-    if (!this.pressAtivo || this.reorderArmado) return;
-
-    const ponto = this.pontoDoEvento(event);
-    if (!ponto) return;
-
-    const dx = Math.abs(ponto.x - this.pressStartX);
-    const dy = Math.abs(ponto.y - this.pressStartY);
-
-    if (
-      dx > this.TOLERANCIA_MOVIMENTO_PX ||
-      dy > this.TOLERANCIA_MOVIMENTO_PX
-    ) {
-      this.cancelarPressaoReorder();
-    }
-  }
-
-  cancelarPressaoReorder() {
-    if (this.pressTimer) {
-      clearTimeout(this.pressTimer);
-      this.pressTimer = null;
-    }
-    this.pressAtivo = false;
-    this.pressEl = null;
-    this.pressTouchId = null;
-  }
-
-  // Os 0.3s se passaram com o dedo parado: habilita o ion-reorder-group e
-  // repassa o toque atual pro Ionic assumir o arraste a partir daqui.
-  private armarArraste() {
-    const el = this.pressEl;
-    const touchId = this.pressTouchId;
-    if (!el) return;
-
-    this.reorderArmado = true;
-
-    requestAnimationFrame(() => {
-      if ('ontouchstart' in window && touchId !== null) {
-        const touch = new Touch({
-          identifier: touchId,
-          target: el,
-          clientX: this.pressStartX,
-          clientY: this.pressStartY,
-        });
-        el.dispatchEvent(
-          new TouchEvent('touchstart', {
-            touches: [touch],
-            targetTouches: [touch],
-            changedTouches: [touch],
-            bubbles: true,
-            cancelable: true,
-          })
-        );
-      } else {
-        el.dispatchEvent(
-          new MouseEvent('mousedown', {
-            clientX: this.pressStartX,
-            clientY: this.pressStartY,
-            bubbles: true,
-            cancelable: true,
-          })
-        );
-      }
-
-      this.cancelarPressaoReorder();
-    });
-  }
-
-  private pontoDoEvento(
-    event: TouchEvent | MouseEvent
-  ): { x: number; y: number } | null {
-    if ('changedTouches' in event) {
-      const touch = event.touches[0] ?? event.changedTouches[0];
-      return touch ? { x: touch.clientX, y: touch.clientY } : null;
-    }
-    return { x: event.clientX, y: event.clientY };
+    this.salvarTarefas();
+    localStorage.setItem('notas', JSON.stringify(this.notas));
   }
 
   acaoTarefa(tarefa: Tarefa) {

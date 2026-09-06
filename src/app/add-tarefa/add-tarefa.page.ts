@@ -1,14 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
 import { FormsModule } from '@angular/forms';
 import { IonicModule, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Etiqueta, Tarefa } from '../interfaces/tarefas.interfaces';
-import {
-  ETIQUETAS,
-  CORES_ETIQUETAS_PERSONALIZADAS,
-  carregarEtiquetasCustomizadas,
-  salvarEtiquetasCustomizadas,
+import { ETIQUETAS,CORES_ETIQUETAS_PERSONALIZADAS,carregarEtiquetasCustomizadas,salvarEtiquetasCustomizadas,
 } from '../constants/etiqueta.constants';
 import { EMOJIS, EmojiItem } from '../emojis';
 @Component({

@@ -54,16 +54,22 @@ ion-content{
           min-height: 130px;
         }
 
-        // Garante que o card inteiro (menos o botão) continue com o mesmo
-        // layout de antes, agora que o conteúdo fica dentro de ion-reorder.
-        // user-select/touch-callout ficam desligados o tempo todo (não só
-        // durante o arraste) pra evitar que o Android abra o menu de
-        // selecionar texto durante os 0.3s de espera do toque.
+        // O card inteiro (menos o botão) fica dentro de ion-reorder, então
+        // arrastar de qualquer ponto do corpo do card já reordena — sem
+        // ícone de alça. user-select/touch-callout desligados pra evitar
+        // que o Android abra o menu de selecionar texto ao segurar.
         ion-reorder {
           display: block;
           user-select: none;
           -webkit-user-select: none;
           -webkit-touch-callout: none;
+        }
+
+        // ion-reorder sempre renderiza um ícone (☰) dentro da sua shadow DOM,
+        // mesmo quando ele só serve pra marcar a área arrastável — escondido
+        // aqui porque o card inteiro já é a "alça".
+        ion-reorder::part(icon) {
+          display: none;
         }
 
         @keyframes dicaArraste {
@@ -114,6 +120,27 @@ ion-content{
         font-size: clamp(1.5rem, 6vw, 1.75rem);
         color: white;
         text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+      }
+      .nota-card .titulo{
+        margin: 0 0 var(--space-1) 0;
+      }
+      .nota-conteudo{
+        background: white;
+        color: black;
+        border-radius: var(--radius-sm);
+        padding: var(--space-3) var(--space-4);
+        margin: var(--space-2) 0 var(--space-3);
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+
+        p{
+          margin: 0;
+          font-size: var(--font-xs);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+        }
       }
       .datahora{
         color: var(--ion-color-secondary-contrast);

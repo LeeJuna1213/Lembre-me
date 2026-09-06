@@ -1,7 +1,335 @@
-ion-content{
-    --background: linear-gradient(
+ion-content {
+  --background: linear-gradient(
     180deg,
     rgb(142, 178, 241) 0%,
     rgba(202, 99, 204, 1) 100%
   );
+
+  .voltar {
+    position: absolute;
+    background-color: transparent;
+    font-size: var(--nav-icon-size);
+    top: var(--nav-icon-top);
+    left: var(--space-3);
+  }
+
+  .header {
+    margin-top: 60px;
+    text-align: center;
+  }
+
+  .emoji {
+    font-size: var(--font-header-emoji);
+    margin: 0;
+  }
+
+  .titulo {
+    font-size: var(--font-title);
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  ion-item {
+    --background: transparent;
+  }
+
+  .add-card {
+    --background: var(--ion-color-primary);
+    border-radius: var(--card-radius);
+    padding: var(--card-padding);
+  }
+
+  .titulo-item {
+    display: block;
+
+    width: 100%;
+    margin: 0 auto var(--space-6);
+
+    background-color: white;
+    color: black;
+
+    border: none;
+    border-radius: var(--card-radius);
+    outline: none;
+
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 6px;
+
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+  }
+
+  // position: relative + input com width: 100% garante que o texto do
+  // título fique centralizado no quadrante inteiro do card — o contador
+  // flutua por cima (absolute) em vez de disputar espaço no flex, que
+  // encolhia o input e descentralizava o texto visualmente.
+  .titulo-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .titulo-input {
+    display: flex;
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: var(--space-3) var(--space-8) 0;
+
+    text-align: center;
+    font-size: var(--font-lg);
+    font-family: 'Kameron', serif;
+
+    background-color: transparent;
+    color: black;
+
+    border: none;
+    outline: none;
+  }
+
+  .titulo-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .titulo-input[readonly] {
+    color: black;
+    opacity: 1;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  .data-nota {
+    text-align: center;
+    color: var(--ion-color-secondary-contrast);
+    font-size: var(--font-xs);
+    margin: 0 0 var(--space-4) 0;
+  }
+
+  .texto-item {
+  position: relative;
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  background-color: white;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 6px;
+ }
+
+  .contador {
+    position: absolute;
+    white-space: nowrap;
+    font-size: var(--font-2xs);
+    color: #666;
+    pointer-events: none;
+  }
+
+  .titulo-wrapper .contador {
+    top: 50%;
+    right: var(--space-2);
+    transform: translateY(-50%);
+  }
+
+  // Flutua dentro do quadrante do editor (que já é position: relative),
+  // sem disputar espaço com o texto — por isso "dentro do input de texto".
+  .contador-conteudo {
+    bottom: var(--space-2);
+    right: var(--space-3);
+    background: rgba(255, 255, 255, 0.85);
+    padding: 2px 8px;
+    border-radius: var(--radius-pill);
+    z-index: 1;
+  }
+
+  .editor-nota {
+    width: 100%;
+    background-color: white;
+    border-radius: var(--card-radius);
+    margin: 0 auto;
+
+      
+      ::ng-deep .ql-container {
+        border: none !important;
+        font-size: var(--font-lg);   
+      }
+
+      ::ng-deep .ql-container.ql-snow {
+        border: none !important;
+      }
+
+    
+      ::ng-deep .ql-editor {
+        outline: none !important;
+        box-shadow: none !important;
+        text-align: center;
+        // padding-bottom extra abre espaço pro contador flutuante não
+        // sobrepor a última linha de texto conforme a nota cresce.
+        padding: 16px 16px 32px;
+        user-select: text !important;
+        -webkit-user-select: text !important;
+      }
+
+      ::ng-deep .ql-editor:focus {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+     
+      ::ng-deep .ql-toolbar {
+        border: none !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      ::ng-deep .ql-toolbar.ql-snow {
+        border: none !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+      }
+
+      ::ng-deep .ql-editor img {
+        max-width: 100%;
+        border-radius: var(--radius-sm);
+        margin: var(--space-2) 0;
+      }
+    }
+
+  // 📖 Modo de visualização: some com a barra de ferramentas, só mostra o texto.
+  .texto-item.somente-leitura {
+    ::ng-deep .ql-toolbar {
+      display: none !important;
+    }
+
+    ::ng-deep .ql-container {
+      border: none !important;
+    }
+  }
+
+  .add {
+  background-color: transparent;
+  border-radius: var(--card-radius);
+  }
+
+  .addTarefa {
+    width: 100%;
+    height: var(--btn-height);
+
+    border: none;
+    border-radius: var(--btn-radius);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    font-size: var(--btn-font);
+    font-weight: 500;
+    font-family: Kameron;
+
+    background-color: var(--ion-color-success);
+    color: var(--ion-color-success-contrast);
+
+    box-shadow: var(--btn-shadow);
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .excluir {
+    background-color: transparent;
+    border-radius: var(--card-radius);
+  }
+
+  .bnt-excluir {
+    width: 100%;
+    height: var(--btn-height);
+
+    border: none;
+    border-radius: var(--btn-radius);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+
+    font-size: var(--btn-font);
+    font-weight: 500;
+    font-family: Kameron;
+
+    background-color: var(--ion-color-danger-tint);
+    color: var(--ion-color-success-contrast);
+
+    box-shadow: var(--btn-shadow);
+
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .opcoes-novo-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .opcoes-novo-painel {
+    width: 100%;
+    max-width: 500px;
+    background: var(--ion-color-primary);
+    border-radius: var(--card-radius) var(--card-radius) 0 0;
+    padding: 30px 10px;
+    padding-bottom: 32px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    animation: subir 0.25s ease-out;
+  }
+
+  @keyframes subir {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .opcoes-novo-titulo {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: white;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+    margin: 0 0 8px 0;
+  }
+
+  .opcao-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    min-height: 60px;
+
+    border: none;
+    border-radius: var(--card-radius);
+    background: var(--ion-color-secondary);
+    color: black;
+    font-size: 1.5rem;
+    font-weight: 500;
+
+    &.cancelar {
+      background: transparent;
+      max-width: 70%;
+      min-height: 44px;
+      padding: 8px 24px;
+      margin: 0 auto;
+      border-radius: var(--radius-pill);
+      background-color: var(--ion-color-secondary);
+      color: black;
+      font-size: 1.1rem;
+    }
+  }
 }

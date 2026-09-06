@@ -23,3 +23,11 @@ export interface Tarefa {
     diasSemana?: number[];
   };
 }
+
+export interface Nota {
+  id: number;
+  titulo: string;
+  conteudo: string; // HTML gerado pelo editor Quill
+  criadoEm: string;
+  atualizadoEm?: string;
+}
