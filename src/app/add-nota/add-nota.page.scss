@@ -68,12 +68,24 @@ ion-content {
     width: 100%;
   }
 
+  // Emoji fixo (não editável) antes do título, no mesmo tamanho do texto —
+  // sempre presente, independente do que a pessoa escrever.
+  .titulo-emoji {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: var(--font-lg);
+    line-height: 1;
+    pointer-events: none;
+  }
+
   .titulo-input {
     display: flex;
     width: 100%;
     box-sizing: border-box;
 
-    padding: var(--space-3) var(--space-8) 0;
+    padding: var(--space-3) var(--space-8);
 
     text-align: center;
     font-size: var(--font-lg);

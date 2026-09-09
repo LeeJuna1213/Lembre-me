@@ -46,30 +46,42 @@ ion-content{
           --background: transparent;
         }
         .tarefa-card {
+          position: relative;
           display: flex;
           flex-direction: column;
           background: var(--ion-color-primary);
           border-radius: var(--card-radius);
           padding: var(--card-padding);
           min-height: 130px;
-        }
-
-        // O card inteiro (menos o botão) fica dentro de ion-reorder, então
-        // arrastar de qualquer ponto do corpo do card já reordena — sem
-        // ícone de alça. user-select/touch-callout desligados pra evitar
-        // que o Android abra o menu de selecionar texto ao segurar.
-        ion-reorder {
-          display: block;
           user-select: none;
           -webkit-user-select: none;
           -webkit-touch-callout: none;
         }
 
-        // ion-reorder sempre renderiza um ícone (☰) dentro da sua shadow DOM,
-        // mesmo quando ele só serve pra marcar a área arrastável — escondido
-        // aqui porque o card inteiro já é a "alça".
-        ion-reorder::part(icon) {
-          display: none;
+        // Só essa alça fica dentro de ion-reorder — o resto do card fica de
+        // fora, então tocar/arrastar em qualquer outro lugar do card continua
+        // fazendo scroll normal da lista. Discreta (baixa opacidade) pra não
+        // poluir o design, mas visível o suficiente pra ser encontrada.
+        .alca-arraste {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: var(--space-2);
+          margin-inline-end: calc(var(--space-2) * -1);
+          opacity: 0.35;
+          transition: opacity 0.2s ease;
+
+          .alca-arraste-icone {
+            font-size: 1.6rem;
+            line-height: 1;
+            color: white;
+          }
+        }
+
+        .alca-arraste-nota {
+          position: absolute;
+          top: var(--space-2);
+          right: var(--space-2);
         }
 
         @keyframes dicaArraste {
@@ -81,6 +93,17 @@ ion-content{
 
         .tarefa-card.dica-arraste {
           animation: dicaArraste 0.9s ease-in-out;
+        }
+
+        // Durante a dica única de primeiro uso, a alça pisca mais visível
+        // pra guiar o olho do usuário até ela.
+        @keyframes dicaArrasteHandle {
+          0%, 100% { opacity: 0.35; }
+          40%, 70% { opacity: 1; }
+        }
+
+        .alca-arraste.dica-arraste-handle {
+          animation: dicaArrasteHandle 0.9s ease-in-out;
         }
         .emoji {
           width: 50px;
@@ -123,6 +146,8 @@ ion-content{
       }
       .nota-card .titulo{
         margin: 0 0 var(--space-1) 0;
+        // espaço reservado pra alça de arraste no canto (posicionada absoluta)
+        padding-right: 2.2rem;
       }
       .nota-conteudo{
         background: white;

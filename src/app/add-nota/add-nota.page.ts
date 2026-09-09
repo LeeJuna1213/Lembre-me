@@ -5,6 +5,7 @@ import { IonicModule, AlertController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { QuillModule } from 'ngx-quill';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Keyboard } from '@capacitor/keyboard';
 import { Nota } from '../interfaces/tarefas.interfaces';
 
 type ModoNota = 'criar' | 'ver' | 'editar';
@@ -315,8 +316,15 @@ export class AddNotaPage implements OnInit {
         {
           text: 'Aplicar 🔗',
           handler: (dados) => {
-            const url = (dados?.url || '').trim();
-            if (!url || !this.quillEditorRef) return;
+            const bruto = (dados?.url || '').trim();
+            if (!bruto || !this.quillEditorRef) return;
+
+            // Sem protocolo (ex: "google.com"), o link é salvo assim e o
+            // WebView do Capacitor resolve como caminho relativo ao próprio
+            // app (localhost/google.com) em vez de abrir o navegador — por
+            // isso garantimos um protocolo explícito aqui.
+            const url = /^[a-z][a-z0-9+.-]*:/i.test(bruto) ? bruto : `https://${bruto}`;
+
             this.quillEditorRef.formatText(
               range.index,
               range.length,
@@ -369,6 +377,13 @@ export class AddNotaPage implements OnInit {
       );
       return;
     }
+
+    // O toolbar do Quill preserva o foco do editor de propósito (pra manter
+    // a seleção de texto ao aplicar formatação), então o teclado continua
+    // aberto e tampa esse menu por cima. Como o botão de imagem não formata
+    // nada, tiramos o foco e escondemos o teclado nativo antes de abrir.
+    this.quillEditorRef?.root.blur();
+    Keyboard.hide().catch(() => {});
 
     this.mostrarOpcoesImagem = true;
   }

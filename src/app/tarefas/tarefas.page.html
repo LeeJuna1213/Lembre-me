@@ -18,31 +18,36 @@
             class="tarefa-card"
             [class.dica-arraste]="mostrarDicaArraste && i === 0"
           >
-            <ion-reorder>
-              <ion-item lines="none">
-                <ion-avatar slot="start" class="emoji">
-                  <span>{{ item.dado.emoji }}</span>
-                </ion-avatar>
-                <ion-label>
-                  <h2 class="titulo">{{ item.dado.titulo }}</h2>
-                  @if (getEtiquetas(item.dado).length) {
-                  <div class="etiquetas">
-                    @for (e of getEtiquetas(item.dado); track e) {
-                    <span class="badge-etiqueta" [style.background-color]="e.cor">
-                      {{ e.emoji }} {{ e.texto }}
-                    </span>
-                    }
-                  </div>
-                  } @if (item.dado.feito) {
-                  <p class="datahora">
-                    ✅ {{ formatarDataFeito(item.dado.datetime) }}
-                  </p>
-                  } @if (textoLembrete(item.dado); as texto) {
-                  <p class="info-lembrete">⏰ {{ texto }}</p>
+            <ion-item lines="none">
+              <ion-avatar slot="start" class="emoji">
+                <span>{{ item.dado.emoji }}</span>
+              </ion-avatar>
+              <ion-label>
+                <h2 class="titulo">{{ item.dado.titulo }}</h2>
+                @if (getEtiquetas(item.dado).length) {
+                <div class="etiquetas">
+                  @for (e of getEtiquetas(item.dado); track e) {
+                  <span class="badge-etiqueta" [style.background-color]="e.cor">
+                    {{ e.emoji }} {{ e.texto }}
+                  </span>
                   }
-                </ion-label>
-              </ion-item>
-            </ion-reorder>
+                </div>
+                } @if (item.dado.feito) {
+                <p class="datahora">
+                  ✅ {{ formatarDataFeito(item.dado.datetime) }}
+                </p>
+                } @if (textoLembrete(item.dado); as texto) {
+                <p class="info-lembrete">⏰ {{ texto }}</p>
+                }
+              </ion-label>
+              <ion-reorder
+                slot="end"
+                class="alca-arraste"
+                [class.dica-arraste-handle]="mostrarDicaArraste && i === 0"
+              >
+                <span class="alca-arraste-icone">⠿</span>
+              </ion-reorder>
+            </ion-item>
             <div class="botao-container">
               <button class="acao-btn" (click)="acaoTarefa(item.dado)">
                 {{ item.dado.feito ? 'Conferir' : 'Fazer' }}
@@ -54,13 +59,17 @@
             class="tarefa-card nota-card"
             [class.dica-arraste]="mostrarDicaArraste && i === 0"
           >
-            <ion-reorder>
-              <h2 class="titulo">{{ item.dado.titulo }}</h2>
-              <p class="datahora">📅 {{ formatarDataNota(item.dado) }}</p>
-              <div class="nota-conteudo">
-                <p>{{ resumoNota(item.dado) || 'Nota sem conteúdo.' }}</p>
-              </div>
+            <ion-reorder
+              class="alca-arraste alca-arraste-nota"
+              [class.dica-arraste-handle]="mostrarDicaArraste && i === 0"
+            >
+              <span class="alca-arraste-icone">⠿</span>
             </ion-reorder>
+            <h2 class="titulo">📝 {{ item.dado.titulo }}</h2>
+            <p class="datahora">📅 {{ formatarDataNota(item.dado) }}</p>
+            <div class="nota-conteudo">
+              <p>{{ resumoNota(item.dado) || 'Nota sem conteúdo.' }}</p>
+            </div>
             <div class="botao-container">
               <button class="acao-btn" (click)="abrirNota(item.dado)">Ver</button>
             </div>

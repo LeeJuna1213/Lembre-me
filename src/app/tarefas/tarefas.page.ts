@@ -118,11 +118,22 @@ export class TarefasPage {
   }
 
   // Prévia em texto puro do conteúdo HTML da nota, pra mostrar no card.
+  //
+  // Não dá pra só tirar as tags com regex: o Quill grava espaços múltiplos
+  // como entidades (ex: "&nbsp;"), então sobravam pedaços tipo "&nbsp;"
+  // escritos na tela. Montamos o HTML numa div e lemos o textContent, que
+  // decodifica as entidades de verdade — só cuidando de trocar as tags de
+  // bloco (parágrafo, quebra de linha, item de lista...) por espaço antes,
+  // senão o textContent gruda o texto de linhas diferentes sem separação.
   resumoNota(nota: Nota): string {
-    const texto = (nota.conteudo || '')
-      .replace(/<[^>]*>/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    const comQuebras = (nota.conteudo || '').replace(
+      /<\/(p|div|li|h[1-6]|blockquote)>|<br\s*\/?>/gi,
+      ' '
+    );
+
+    const div = document.createElement('div');
+    div.innerHTML = comQuebras;
+    const texto = (div.textContent || '').replace(/\s+/g, ' ').trim();
 
     if (!texto) return '';
     return texto.length > 150 ? `${texto.slice(0, 150)}…` : texto;
